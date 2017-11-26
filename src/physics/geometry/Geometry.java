@@ -28,4 +28,8 @@ public abstract class Geometry implements Cloneable {
 
     public abstract void reset(List<PointGeometry> pointGeometries);
 
+    @Override
+    public Geometry clone() {
+        return null;
+    }
 }

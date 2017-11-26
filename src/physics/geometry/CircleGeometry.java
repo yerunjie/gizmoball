@@ -46,4 +46,6 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
     public void drawing(Color color, Graphics g) {
         print(color, g);
     }
+
+
 }

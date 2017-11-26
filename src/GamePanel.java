@@ -64,8 +64,28 @@ public class GamePanel extends JPanel {
     }
 
     public void startGame() {
+        flippers = Lists.newArrayList();
+        motionInterfaces = Lists.newArrayList();
+        collisionInterfaces = Lists.newArrayList();
         if (ball == null) {
             throw new RuntimeException("ball has not place");
+        }
+        try {
+            motionInterfaces.add((MotionInterface) ball.clone());
+            for (Geometry geometry : obstacles) {
+                Geometry clone = geometry.clone();
+                if (clone instanceof Flipper) {
+                    flippers.add((Flipper) clone);
+                }
+                if (clone instanceof MotionInterface) {
+                    motionInterfaces.add((MotionInterface) clone);
+                }
+                if (clone instanceof CollisionInterface) {
+                    collisionInterfaces.add((CollisionInterface) clone);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         status = 2;
         eventListener = new AnimationEventListener();

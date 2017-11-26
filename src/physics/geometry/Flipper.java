@@ -5,5 +5,8 @@ public class Flipper extends RectangleGeometry {
         super(point1, point2);
     }
 
-
+    @Override
+    public Flipper clone() throws CloneNotSupportedException {
+        return (Flipper) super.clone();
+    }
 }
