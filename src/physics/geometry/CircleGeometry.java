@@ -47,5 +47,23 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
         print(color, g);
     }
 
+    @Override
+    public Object clone(){
+        CircleGeometry newObject = (CircleGeometry) super.clone();
+        newObject.setCenter((PointGeometry) newObject.getCenter().clone());
+        return newObject;
+    }
+
+    @Override
+    public String toString(){
+        StringBuffer sb = new StringBuffer("CircleGeometry[\n");
+        sb.append("super:").append(super.toString());
+        sb.append("    r:").append(r).append(";\n");
+        sb.append("    center:").append(center.toString()).append(";\n");
+        sb.append("]\n");
+
+        return sb.toString();
+    }
+
 
 }

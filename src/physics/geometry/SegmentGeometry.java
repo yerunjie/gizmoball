@@ -21,4 +21,17 @@ public class SegmentGeometry extends LineGeometry implements PrintInterface {
         g.drawLine((int) point1.x, (int) point1.y, (int) point2.x, (int) point2.y);
     }
 
+    @Override
+    public Object clone(){
+        return super.clone();
+    }
+
+    @Override
+    public String toString(){
+        StringBuffer sb = new StringBuffer("SegmentGeometry[\n");
+        sb.append("super:").append(super.toString());
+        sb.append("]\n");
+
+        return sb.toString();
+    }
 }
