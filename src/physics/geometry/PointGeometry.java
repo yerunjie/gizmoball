@@ -3,9 +3,11 @@ package physics.geometry;
 import lombok.Data;
 
 import java.awt.*;
+import java.util.List;
 
 @Data
 public class PointGeometry extends Geometry {
+    public static final PointGeometry origin = new PointGeometry(0, 0);
     protected double x;
     protected double y;
 
@@ -15,12 +17,20 @@ public class PointGeometry extends Geometry {
     }
 
     @Override
-    public boolean isInside(PointGeometry pointGeometry) {
-        throw new IllegalArgumentException();
+    public void reset(List<PointGeometry> pointGeometries) {
+        if (pointGeometries.size() != 1) {
+            throw new IllegalArgumentException();
+        }
+        x = pointGeometries.get(0).x;
+        y = pointGeometries.get(0).y;
     }
 
-    @Override
-    public void print(Color color,Graphics g) {
+    public PointGeometry(Point point) {
+        this.x = point.x;
+        this.y = point.y;
+    }
 
+    public Point toPoint() {
+        return new Point((int) x, (int) y);
     }
 }

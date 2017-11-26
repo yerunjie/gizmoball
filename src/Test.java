@@ -1,8 +1,4 @@
-import physics.geometry.Geometry;
-import physics.geometry.PointGeometry;
 import physics.math.MathUtils;
-
-import java.awt.*;
 
 public class Test {
 

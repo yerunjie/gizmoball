@@ -7,7 +7,7 @@ import physics.geometry.PointGeometry;
 import java.util.List;
 
 public class MathUtils {
-    public static final double APPROXIMATE_DISTANCE = 1;
+    public static final double APPROXIMATE_DISTANCE = 5;
 
     public static double distanceBetweenTwoPoints(PointGeometry p1, PointGeometry p2) {
         double dx2 = Math.pow(p1.getX() - p2.getX(), 2);
@@ -43,5 +43,21 @@ public class MathUtils {
         y = k / l;
         x = (c2 - b2 * y) / a2;
         return Lists.newArrayList(x, y);
+    }
+
+    public static boolean isInside(List<PointGeometry> pointGeometries, PointGeometry pointGeometry) {
+        int i, j = pointGeometries.size() - 1;
+        boolean oddNodes = false;
+        double[] xpoints = pointGeometries.stream().mapToDouble(PointGeometry::getX).toArray();
+        double[] ypoints = pointGeometries.stream().mapToDouble(PointGeometry::getY).toArray();
+        for (i = 0; i < 3; i++) {
+            if ((ypoints[i] < pointGeometry.getY() && ypoints[j] >= pointGeometry.getY()
+                    || ypoints[j] < pointGeometry.getY() && ypoints[i] >= pointGeometry.getY())
+                    && (xpoints[i] <= pointGeometry.getX() || xpoints[j] <= pointGeometry.getX())) {
+                oddNodes ^= (xpoints[i] + (pointGeometry.getY() - ypoints[i]) / (ypoints[j] - ypoints[i]) * (xpoints[j] - xpoints[i]) < pointGeometry.getX());
+            }
+            j = i;
+        }
+        return oddNodes;
     }
 }

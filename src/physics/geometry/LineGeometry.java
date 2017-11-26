@@ -1,9 +1,7 @@
 package physics.geometry;
 
-import com.google.common.collect.Lists;
 import lombok.Data;
 
-import java.awt.*;
 import java.util.List;
 
 import static physics.math.MathUtils.binaryLinearEquationGroup;
@@ -32,18 +30,11 @@ public class LineGeometry extends TwoPointGeometry {
         }*/
     }
 
+
+
     /*public LineGeometry(double slope, double intercept) {
         this.slope = slope;
         this.intercept = intercept;
     }*/
 
-    @Override
-    public boolean isInside(PointGeometry pointGeometry) {
-        throw new IllegalArgumentException();
-    }
-
-    @Override
-    public void print(Color color, Graphics g) {
-
-    }
 }
