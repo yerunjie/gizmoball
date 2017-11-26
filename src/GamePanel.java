@@ -1,9 +1,9 @@
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.tools.javac.util.Pair;
-import physics.geometry.Geometry;
-import physics.geometry.PointGeometry;
-import physics.geometry.TwoPointGeometry;
+import physics.geometry.*;
+import physics.interfaces.CollisionInterface;
+import physics.interfaces.MotionInterface;
 import physics.interfaces.PrintInterface;
 import physics.math.MathUtils;
 
@@ -19,13 +19,19 @@ public class GamePanel extends JPanel {
     private PlayRoom playRoom;
     private Timer timer;
     private Geometry obstacle;
+    private CircleGeometry ball;
     private List<Geometry> obstacles;
+    private List<Flipper> flippers;
+    private List<MotionInterface> motionInterfaces;
+    private List<CollisionInterface> collisionInterfaces;
     private AnimationEventListener eventListener;
     private Map<Pair<Integer, Integer>, List<Geometry>> obstacleIndex;
+    private int status;
 
     public GamePanel(PlayRoom playRoom) {
         //设置弹球窗口大小和背景
         this.playRoom = playRoom;
+        status = 1;
         this.setSize(800, 800);
         this.setBackground(Color.WHITE);
 
@@ -58,6 +64,10 @@ public class GamePanel extends JPanel {
     }
 
     public void startGame() {
+        if (ball == null) {
+            throw new RuntimeException("ball has not place");
+        }
+        status = 2;
         eventListener = new AnimationEventListener();
         addMouseListener(eventListener);
         addMouseMotionListener(eventListener);
@@ -68,6 +78,7 @@ public class GamePanel extends JPanel {
     }
 
     public void endGame() {
+        status = 1;
         removeMouseListener(eventListener);
         removeMouseMotionListener(eventListener);
         removeKeyListener(eventListener);
@@ -81,15 +92,27 @@ public class GamePanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (Geometry geometry : obstacles) {
-            if (geometry instanceof PrintInterface) {
-                ((PrintInterface) geometry).print(Color.BLACK, g);
-            }
+        switch (status) {
+            case 1:
+                for (Geometry geometry : obstacles) {
+                    if (geometry instanceof PrintInterface) {
+                        ((PrintInterface) geometry).print(Color.BLACK, g);
+                    }
+                }
+                if (obstacle != null && obstacle instanceof PrintInterface) {
+                    ((PrintInterface) obstacle).drawing(Color.GREEN, g);
+                }
+                break;
+            case 2:
+                for (MotionInterface motionInterface : motionInterfaces) {
+                    motionInterface.update();
+                    motionInterface.print(Color.BLACK, g);
+                }
+                for (CollisionInterface collisionInterface : collisionInterfaces) {
+                    collisionInterface.onCollision(ball);
+                }
+                break;
         }
-        if (obstacle != null && obstacle instanceof PrintInterface) {
-            ((PrintInterface) obstacle).drawing(Color.GREEN, g);
-        }
-
     }
 
     class AnimationEventListener extends MouseAdapter implements MouseMotionListener, KeyListener, ActionListener {

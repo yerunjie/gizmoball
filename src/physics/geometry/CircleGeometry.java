@@ -42,4 +42,8 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
         g.drawOval((int) (center.x - r), (int) (center.y - r), 2 * (int) r, 2 * (int) r);
     }
 
+    @Override
+    public void drawing(Color color, Graphics g) {
+        print(color, g);
+    }
 }

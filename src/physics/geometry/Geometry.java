@@ -7,7 +7,7 @@ import physics.Vector;
 import java.util.List;
 
 @Data
-public abstract class Geometry {
+public abstract class Geometry implements Cloneable {
     private static int count = 0;
     protected Vector constantAcceleration;
     protected double frictionCoefficient;

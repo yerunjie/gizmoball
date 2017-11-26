@@ -1,6 +1,4 @@
-import physics.geometry.PointGeometry;
-import physics.geometry.RectangleGeometry;
-import physics.geometry.TriangleGeometry;
+import physics.geometry.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +9,7 @@ public class PlayRoom extends JFrame {
     private static boolean gameState = false;
     private JPanel operatePanel;
     private GamePanel gamePanel;
-    private JButton start, stop, addAbsorb, end, addFlipper,addTriangle,addRectangle;
+    private JButton start, stop, addAbsorb, end, addFlipper, addTriangle, addRectangle, addBall;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -24,6 +22,9 @@ public class PlayRoom extends JFrame {
     public void setEditMode(boolean mode) {
         addAbsorb.setEnabled(mode);
         addFlipper.setEnabled(mode);
+        addTriangle.setEnabled(mode);
+        addBall.setEnabled(mode);
+        addRectangle.setEnabled(mode);
     }
 
     public void startGame() {
@@ -98,7 +99,7 @@ public class PlayRoom extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == addAbsorb) {
                     setEditMode(false);
-                    gamePanel.addObstacle(new RectangleGeometry(PointGeometry.origin, PointGeometry.origin));
+                    gamePanel.addObstacle(new Absorber(PointGeometry.origin, PointGeometry.origin));
                 }
             }
         });
@@ -110,7 +111,7 @@ public class PlayRoom extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == addFlipper) {
                     setEditMode(false);
-                    gamePanel.addObstacle(new TriangleGeometry(PointGeometry.origin, PointGeometry.origin,PointGeometry.origin));
+                    gamePanel.addObstacle(new Flipper(PointGeometry.origin, PointGeometry.origin));
                 }
             }
         });
@@ -122,7 +123,7 @@ public class PlayRoom extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == addTriangle) {
                     setEditMode(false);
-                    gamePanel.addObstacle(new TriangleGeometry(PointGeometry.origin, PointGeometry.origin,PointGeometry.origin));
+                    gamePanel.addObstacle(new TriangleGeometry(PointGeometry.origin, PointGeometry.origin, PointGeometry.origin));
                 }
             }
         });
@@ -139,6 +140,18 @@ public class PlayRoom extends JFrame {
             }
         });
 
+        addBall = new JButton("添加小球");
+        addBall.setBounds(850, 400, 100, 30);
+        addBall.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == addBall) {
+                    setEditMode(false);
+                    gamePanel.addObstacle(new CircleGeometry(PointGeometry.origin, PointGeometry.origin));
+                }
+            }
+        });
+
 
         //将按钮添加到操作侧栏
         operatePanel.add(start);
@@ -148,6 +161,7 @@ public class PlayRoom extends JFrame {
         operatePanel.add(addFlipper);
         operatePanel.add(addTriangle);
         operatePanel.add(addRectangle);
+        operatePanel.add(addBall);
 
         //显示窗口
         this.setVisible(true);

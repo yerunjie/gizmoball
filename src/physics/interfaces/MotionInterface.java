@@ -3,7 +3,7 @@ package physics.interfaces;
 import physics.Vector;
 import physics.geometry.PointGeometry;
 
-public interface MotionInterface {
+public interface MotionInterface extends PrintInterface{
 
     /**
      * update单位时间的位置
