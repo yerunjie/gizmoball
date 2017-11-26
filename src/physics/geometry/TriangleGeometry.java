@@ -99,4 +99,36 @@ public class TriangleGeometry extends Geometry implements PrintInterface,Operate
                     (int) temp.get(i + 1).y);
         }
     }
+
+    @Override
+    public Object clone(){
+        TriangleGeometry newObject = (TriangleGeometry) super.clone();
+        newObject.setPoint1((PointGeometry) getPoint1().clone());
+        newObject.setPoint2((PointGeometry) getPoint2().clone());
+        newObject.setPoint3((PointGeometry) getPoint3().clone());
+        return newObject;
+    }
+
+    @Override
+    public String toString(){
+        StringBuffer sb = new StringBuffer("TriangleGeometry[\n");
+        sb.append("super:").append(super.toString());
+        sb.append("point1:").append(point1.toString());
+        sb.append("point2:").append(point2.toString());
+        sb.append("point3:").append(point3.toString());
+        sb.append("xpoints:").append("[");
+        for (int i=0; i<xpoints.length; i++){
+            sb.append(xpoints[i]).append(",");
+        }
+        sb.append("]\n");
+        sb.append("ypoints:").append("[");
+        for (int i=0; i<ypoints.length; i++){
+            sb.append(ypoints[i]).append(",");
+        }
+        sb.append("]\n");
+
+        sb.append("]\n");
+
+        return sb.toString();
+    }
 }

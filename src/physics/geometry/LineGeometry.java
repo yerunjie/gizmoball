@@ -37,4 +37,21 @@ public class LineGeometry extends TwoPointGeometry {
         this.intercept = intercept;
     }*/
 
+    @Override
+    public Object clone(){
+        return super.clone();
+    }
+
+    @Override
+    public String toString(){
+        StringBuffer sb = new StringBuffer("LineGeometry[\n");
+        sb.append("super:").append(super.toString());
+        sb.append("a:").append(a).append(";\n");
+        sb.append("b:").append(b).append(";\n");
+        sb.append("c:").append(c).append(";\n");
+        sb.append("]\n");
+
+        return sb.toString();
+    }
+
 }

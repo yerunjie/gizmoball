@@ -87,4 +87,20 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
         g.setColor(color);
         g.drawRect((int) point1.x, (int) point1.y, (int) width, (int) height);
     }
+
+    @Override
+    public Object clone() {
+        return super.clone();
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer("RectangleGeometry[\n");
+        sb.append("super:").append(super.toString());
+        sb.append("width:").append(width).append(";\n");
+        sb.append("height:").append(height).append(";\n");
+        sb.append("]\n");
+
+        return sb.toString();
+    }
 }

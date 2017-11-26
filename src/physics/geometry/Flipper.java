@@ -6,7 +6,16 @@ public class Flipper extends RectangleGeometry {
     }
 
     @Override
-    public Flipper clone() throws CloneNotSupportedException {
-        return (Flipper) super.clone();
+    public Object clone(){
+        return super.clone();
+    }
+
+    @Override
+    public String toString(){
+        StringBuffer sb = new StringBuffer("Flipper[\n");
+        sb.append("super:").append(super.toString());
+        sb.append("]\n");
+
+        return sb.toString();
     }
 }

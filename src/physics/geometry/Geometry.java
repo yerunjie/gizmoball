@@ -29,7 +29,27 @@ public abstract class Geometry implements Cloneable {
     public abstract void reset(List<PointGeometry> pointGeometries);
 
     @Override
-    public Geometry clone() {
-        return null;
+    public Object clone(){
+        Geometry newObject = null;
+        try {
+            newObject = (Geometry) super.clone();
+            newObject.setConstantAcceleration((Vector) getConstantAcceleration().clone());
+            newObject.setVelocity((Vector) getVelocity().clone());
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return newObject;
+    }
+
+    @Override
+    public String toString(){
+        StringBuffer sb = new StringBuffer("Geometry[\n");
+        sb.append("count:").append(count).append(";\n");
+        sb.append("constantAcceleration:").append(constantAcceleration.toString()).append(";\n");
+        sb.append("frictionCoefficient:").append(frictionCoefficient).append(";\n");
+        sb.append("velocity:").append(velocity.toString()).append(";\n");
+        sb.append("]\n");
+
+        return sb.toString();
     }
 }
