@@ -1,3 +1,5 @@
+package gizmo;
+
 import physics.geometry.*;
 
 import javax.swing.*;
@@ -9,7 +11,7 @@ public class PlayRoom extends JFrame {
     private static boolean gameState = false;
     private JPanel operatePanel;
     private GamePanel gamePanel;
-    private JButton start, stop, addAbsorb, end, addFlipper, addTriangle, addRectangle, addBall;
+    private JButton start, stop, addAbsorb, end, addFlipper, addTriangle, addRectangle, addCircle, addBall;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -140,14 +142,26 @@ public class PlayRoom extends JFrame {
             }
         });
 
+        addCircle = new JButton("添加球形障碍物");
+        addCircle.setBounds(850, 400, 100, 30);
+        addCircle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == addCircle) {
+                    setEditMode(false);
+                    gamePanel.addObstacle(new CircleGeometry(PointGeometry.origin, PointGeometry.origin));
+                }
+            }
+        });
+
         addBall = new JButton("添加小球");
-        addBall.setBounds(850, 400, 100, 30);
+        addBall.setBounds(850, 450, 100, 30);
         addBall.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == addBall) {
                     setEditMode(false);
-                    gamePanel.addObstacle(new CircleGeometry(PointGeometry.origin, PointGeometry.origin));
+                    gamePanel.addBall(new CircleGeometry(PointGeometry.origin, PointGeometry.origin));
                 }
             }
         });
@@ -161,6 +175,7 @@ public class PlayRoom extends JFrame {
         operatePanel.add(addFlipper);
         operatePanel.add(addTriangle);
         operatePanel.add(addRectangle);
+        operatePanel.add(addCircle);
         operatePanel.add(addBall);
 
         //显示窗口

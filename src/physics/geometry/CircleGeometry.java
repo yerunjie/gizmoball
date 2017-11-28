@@ -1,7 +1,10 @@
 package physics.geometry;
 
+import gizmo.GamePanel;
 import lombok.Data;
+import physics.Vector;
 import physics.interfaces.CollisionInterface;
+import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
 import physics.interfaces.PrintInterface;
 
@@ -10,7 +13,7 @@ import java.awt.*;
 import static physics.math.MathUtils.distanceBetweenTwoPoints;
 
 @Data
-public class CircleGeometry extends RectangleGeometry implements PrintInterface, OperateInterface {
+public class CircleGeometry extends RectangleGeometry implements PrintInterface, OperateInterface, MotionInterface {
     protected double r;
     protected PointGeometry center;
 
@@ -48,14 +51,14 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
     }
 
     @Override
-    public Object clone(){
+    public CircleGeometry clone() {
         CircleGeometry newObject = (CircleGeometry) super.clone();
         newObject.setCenter((PointGeometry) newObject.getCenter().clone());
         return newObject;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuffer sb = new StringBuffer("CircleGeometry[\n");
         sb.append("super:").append(super.toString());
         sb.append("    r:").append(r).append(";\n");
@@ -65,5 +68,19 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
         return sb.toString();
     }
 
+    @Override
+    public void update() {
+        center.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
+        center.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
+        velocity.plus(new Vector(constantAcceleration).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
+    }
 
+    @Override
+    public void setRotationSpeed(PointGeometry rotateCenter, double speed) {
+    }
+
+    @Override
+    public void setInstantaneousAcceleration(Vector acceleration) {
+        velocity.plus(acceleration);
+    }
 }

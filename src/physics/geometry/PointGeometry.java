@@ -35,12 +35,12 @@ public class PointGeometry extends Geometry {
     }
 
     @Override
-    public Object clone(){
-        return super.clone();
+    public PointGeometry clone() {
+        return (PointGeometry) super.clone();
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuffer sb = new StringBuffer("PointGeometry[\n");
         sb.append("super:").append(super.toString());
         sb.append("x:").append(x).append(";\n");

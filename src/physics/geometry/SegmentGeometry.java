@@ -22,8 +22,8 @@ public class SegmentGeometry extends LineGeometry implements PrintInterface {
     }
 
     @Override
-    public Object clone(){
-        return super.clone();
+    public SegmentGeometry clone(){
+        return (SegmentGeometry)super.clone();
     }
 
     @Override

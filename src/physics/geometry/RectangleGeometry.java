@@ -89,8 +89,8 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
     }
 
     @Override
-    public Object clone() {
-        return super.clone();
+    public RectangleGeometry clone() {
+        return (RectangleGeometry)super.clone();
     }
 
     @Override

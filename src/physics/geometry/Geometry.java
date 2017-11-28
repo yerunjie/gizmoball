@@ -24,12 +24,15 @@ public abstract class Geometry implements Cloneable {
     protected Geometry() {
         id = generateId();
         temp = Lists.newArrayList();
+        frictionCoefficient = 0;
+        constantAcceleration = new Vector(0, 0);
+        velocity = new Vector(0, 0);
     }
 
     public abstract void reset(List<PointGeometry> pointGeometries);
 
     @Override
-    public Object clone(){
+    public Geometry clone() {
         Geometry newObject = null;
         try {
             newObject = (Geometry) super.clone();
@@ -42,7 +45,7 @@ public abstract class Geometry implements Cloneable {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuffer sb = new StringBuffer("Geometry[\n");
         sb.append("count:").append(count).append(";\n");
         sb.append("constantAcceleration:").append(constantAcceleration.toString()).append(";\n");

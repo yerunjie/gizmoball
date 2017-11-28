@@ -6,8 +6,8 @@ public class Flipper extends RectangleGeometry {
     }
 
     @Override
-    public Object clone(){
-        return super.clone();
+    public Flipper clone(){
+        return (Flipper)super.clone();
     }
 
     @Override

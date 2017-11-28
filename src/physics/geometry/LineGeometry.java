@@ -38,8 +38,8 @@ public class LineGeometry extends TwoPointGeometry {
     }*/
 
     @Override
-    public Object clone(){
-        return super.clone();
+    public LineGeometry clone(){
+        return (LineGeometry)super.clone();
     }
 
     @Override

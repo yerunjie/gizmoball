@@ -24,7 +24,7 @@ public abstract class TwoPointGeometry extends Geometry {
     }
 
     @Override
-    public Object clone(){
+    public TwoPointGeometry clone(){
         TwoPointGeometry newObject = (TwoPointGeometry) super.clone();
         newObject.setPoint1((PointGeometry) getPoint1().clone());
         newObject.setPoint2((PointGeometry) getPoint2().clone());

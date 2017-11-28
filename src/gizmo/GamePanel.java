@@ -1,6 +1,9 @@
+package gizmo;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.tools.javac.util.Pair;
+import physics.Vector;
 import physics.geometry.*;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.MotionInterface;
@@ -14,12 +17,12 @@ import java.util.List;
 import java.util.Map;
 
 public class GamePanel extends JPanel {
-    private static int FRAMES_PER_SECOND = 100;
+    public static int FRAMES_PER_SECOND = 100;
     private static int INDEX_BLOCK_NUMBER = 20;
     private PlayRoom playRoom;
     private Timer timer;
     private Geometry obstacle;
-    private CircleGeometry ball;
+    private CircleGeometry ball,tempBall;
     private List<Geometry> obstacles;
     private List<Flipper> flippers;
     private List<MotionInterface> motionInterfaces;
@@ -55,6 +58,16 @@ public class GamePanel extends JPanel {
         timer.start();
     }
 
+    public void addBall(CircleGeometry ball) {
+        this.ball = ball;
+        EditEventListener editEventListener = getEditEventListener(ball);
+        addMouseListener(editEventListener);
+        addMouseMotionListener(editEventListener);
+        timer = new Timer(1000 / FRAMES_PER_SECOND, editEventListener);
+        timer.start();
+    }
+
+
     public void endAddObstacle() {
         timer.stop();
         obstacles.add(obstacle);
@@ -71,7 +84,9 @@ public class GamePanel extends JPanel {
             throw new RuntimeException("ball has not place");
         }
         try {
-            motionInterfaces.add((MotionInterface) ball.clone());
+            tempBall = ball.clone();
+            tempBall.setConstantAcceleration(new Vector(0, 10));
+            motionInterfaces.add(tempBall);
             for (Geometry geometry : obstacles) {
                 Geometry clone = geometry.clone();
                 if (clone instanceof Flipper) {
@@ -92,7 +107,7 @@ public class GamePanel extends JPanel {
         addMouseListener(eventListener);
         addMouseMotionListener(eventListener);
         addKeyListener(eventListener);
-        requestFocus(); // make sure keyboard is directed to us
+        requestFocus();
         timer = new Timer(1000 / FRAMES_PER_SECOND, eventListener);
         timer.start();
     }
@@ -103,6 +118,7 @@ public class GamePanel extends JPanel {
         removeMouseMotionListener(eventListener);
         removeKeyListener(eventListener);
         timer.stop();
+        update();
     }
 
     private void update() {
@@ -122,6 +138,9 @@ public class GamePanel extends JPanel {
                 if (obstacle != null && obstacle instanceof PrintInterface) {
                     ((PrintInterface) obstacle).drawing(Color.GREEN, g);
                 }
+                if (ball != null) {
+                    ball.drawing(Color.pink, g);
+                }
                 break;
             case 2:
                 for (MotionInterface motionInterface : motionInterfaces) {
@@ -129,7 +148,7 @@ public class GamePanel extends JPanel {
                     motionInterface.print(Color.BLACK, g);
                 }
                 for (CollisionInterface collisionInterface : collisionInterfaces) {
-                    collisionInterface.onCollision(ball);
+                    collisionInterface.onCollision(tempBall);
                 }
                 break;
         }
@@ -194,7 +213,12 @@ public class GamePanel extends JPanel {
         }
 
         protected void end() {
-            endAddObstacle();
+            if (obstacle != null) {
+                endAddObstacle();
+            } else {
+                timer.stop();
+                playRoom.setEditMode(true);
+            }
             removeMouseListener(this);
             removeMouseMotionListener(this);
         }
@@ -259,7 +283,11 @@ public class GamePanel extends JPanel {
                 pointGeometries.remove(1);
                 pointGeometries.add(new PointGeometry(e.getPoint()));
             }
-            obstacle.reset(pointGeometries);
+            if (obstacle != null) {
+                obstacle.reset(pointGeometries);
+            } else {
+                ball.reset(pointGeometries);
+            }
         }
 
         @Override

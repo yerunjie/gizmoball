@@ -5,8 +5,8 @@ public class Absorber extends RectangleGeometry{
         super(point1, point2);
     }
     @Override
-    public Object clone(){
-        return super.clone();
+    public Absorber clone(){
+        return (Absorber)super.clone();
     }
 
     @Override

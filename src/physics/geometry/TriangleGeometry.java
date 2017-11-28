@@ -101,7 +101,7 @@ public class TriangleGeometry extends Geometry implements PrintInterface,Operate
     }
 
     @Override
-    public Object clone(){
+    public TriangleGeometry clone(){
         TriangleGeometry newObject = (TriangleGeometry) super.clone();
         newObject.setPoint1((PointGeometry) getPoint1().clone());
         newObject.setPoint2((PointGeometry) getPoint2().clone());
