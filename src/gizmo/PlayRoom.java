@@ -48,7 +48,7 @@ public class PlayRoom extends JFrame {
     public PlayRoom() {
         this.setTitle("弹球测试样例");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1000, 900);
+        this.setSize(1000, 700);
 
         //添加弹球窗口
         gamePanel = new GamePanel(this);

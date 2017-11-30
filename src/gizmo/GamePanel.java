@@ -28,25 +28,25 @@ public class GamePanel extends JPanel {
     private List<MotionInterface> motionInterfaces;
     private List<CollisionInterface> collisionInterfaces;
     private AnimationEventListener eventListener;
-    private Map<Pair<Integer, Integer>, List<Geometry>> obstacleIndex;
+   // private Map<Pair<Integer, Integer>, List<Geometry>> obstacleIndex;
     private int status;
 
     public GamePanel(PlayRoom playRoom) {
         //设置弹球窗口大小和背景
         this.playRoom = playRoom;
         status = 1;
-        this.setSize(800, 800);
+        this.setSize(700, 700);
         this.setBackground(Color.WHITE);
 
         obstacles = Lists.newArrayList();
 
-        obstacleIndex = Maps.newHashMap();
-        for (int i = 0; i < INDEX_BLOCK_NUMBER; i++) {
-            for (int j = 0; j < INDEX_BLOCK_NUMBER; j++) {
-                Pair<Integer, Integer> pair = new Pair<>(i, j);
-                obstacleIndex.put(pair, Lists.newArrayList());
-            }
-        }
+     //   obstacleIndex = Maps.newHashMap();
+//        for (int i = 0; i < INDEX_BLOCK_NUMBER; i++) {
+//            for (int j = 0; j < INDEX_BLOCK_NUMBER; j++) {
+//                Pair<Integer, Integer> pair = new Pair<>(i, j);
+//                obstacleIndex.put(pair, Lists.newArrayList());
+//            }
+//        }
     }
 
     public void addObstacle(Geometry newObstacle) {
@@ -71,7 +71,6 @@ public class GamePanel extends JPanel {
     public void endAddObstacle() {
         timer.stop();
         obstacles.add(obstacle);
-
         obstacle = null;
         playRoom.setEditMode(true);
     }
@@ -80,15 +79,21 @@ public class GamePanel extends JPanel {
         flippers = Lists.newArrayList();
         motionInterfaces = Lists.newArrayList();
         collisionInterfaces = Lists.newArrayList();
+        obstacles.add(new SegmentGeometry(new PointGeometry(10,10),new PointGeometry(10,650)));
+        obstacles.add(new SegmentGeometry(new PointGeometry(10,650),new PointGeometry(690,650)));
+        obstacles.add(new SegmentGeometry(new PointGeometry(690,650),new PointGeometry(690,10)));
+        obstacles.add(new SegmentGeometry(new PointGeometry(690,10),new PointGeometry(10,10)));
+
         if (ball == null) {
             throw new RuntimeException("ball has not place");
         }
         try {
             tempBall = ball.clone();
-            tempBall.setConstantAcceleration(new Vector(0, 10));
+            tempBall.setConstantAcceleration(new Vector(0, 0));
+            tempBall.setVelocity(new Vector(50, 50));
             motionInterfaces.add(tempBall);
             for (Geometry geometry : obstacles) {
-                Geometry clone = geometry.clone();
+                Geometry clone = (Geometry)geometry.clone();
                 if (clone instanceof Flipper) {
                     flippers.add((Flipper) clone);
                 }

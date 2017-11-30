@@ -1,15 +1,18 @@
 package physics.geometry;
 
 import lombok.Data;
+import physics.Vector;
 import physics.interfaces.CollisionInterface;
+import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
 import physics.interfaces.PrintInterface;
+import physics.math.MathUtils;
 
 import java.awt.*;
 import java.util.List;
 
 @Data
-public class TriangleGeometry extends Geometry implements PrintInterface,OperateInterface {
+public class TriangleGeometry extends Geometry implements PrintInterface,OperateInterface,MotionInterface,CollisionInterface {
     private PointGeometry point1;
     private PointGeometry point2;
     private PointGeometry point3;
@@ -130,5 +133,47 @@ public class TriangleGeometry extends Geometry implements PrintInterface,Operate
         sb.append("]\n");
 
         return sb.toString();
+    }
+
+    @Override
+    public void update() {
+    }
+
+    @Override
+    public void setRotationSpeed(PointGeometry rotateCenter, double speed) {
+
+    }
+
+    @Override
+    public void setInstantaneousAcceleration(Vector acceleration) {
+
+    }
+
+    @Override
+    public boolean onCollision(CircleGeometry ball) {
+        if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(
+                point1,point2))<= ball.r){
+            Vector projection=ball.getVelocity().projection(new LineGeometry(point1,point2));
+            Vector subVector=ball.getVelocity().takeFrom(projection);
+            ball.setInstantaneousAcceleration(subVector.negate().multiplyScalar(2));
+            return true;
+        }
+        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(
+                point3,point2))<= ball.r){
+            ball.setInstantaneousAcceleration(
+                    ball.getVelocity().takeFrom(
+                            ball.getVelocity().projection(new LineGeometry(point3,point2))).negate().multiplyScalar(2)
+            );
+            return true;
+        }
+        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(
+                point1,point3))<= ball.r){
+            ball.setInstantaneousAcceleration(
+                    ball.getVelocity().takeFrom(
+                            ball.getVelocity().projection(new LineGeometry(point1,point3))).negate().multiplyScalar(2)
+            );
+            return true;
+        }
+        else return false;
     }
 }

@@ -7,13 +7,14 @@ import physics.interfaces.CollisionInterface;
 import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
 import physics.interfaces.PrintInterface;
+import physics.math.MathUtils;
 
 import java.awt.*;
 
 import static physics.math.MathUtils.distanceBetweenTwoPoints;
 
 @Data
-public class CircleGeometry extends RectangleGeometry implements PrintInterface, OperateInterface, MotionInterface {
+public class CircleGeometry extends RectangleGeometry implements PrintInterface, OperateInterface, MotionInterface,CollisionInterface {
     protected double r;
     protected PointGeometry center;
 
@@ -82,5 +83,15 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
     @Override
     public void setInstantaneousAcceleration(Vector acceleration) {
         velocity.plus(acceleration);
+    }
+
+    @Override
+    public boolean onCollision(CircleGeometry ball) {
+        if(MathUtils.distanceBetweenTwoPoints(ball.getCenter(),this.center)<=this.r+ball.getR()){
+            Vector pro=ball.getVelocity().projection(new LineGeometry(ball.getCenter(),this.center));
+            ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(2));
+            return true;
+        }
+        return false;
     }
 }

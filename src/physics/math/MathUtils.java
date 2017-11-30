@@ -1,6 +1,7 @@
 package physics.math;
 
 import com.google.common.collect.Lists;
+import physics.Vector;
 import physics.geometry.LineGeometry;
 import physics.geometry.PointGeometry;
 
@@ -25,7 +26,19 @@ public class MathUtils {
         double a = line.getA();
         double b = line.getB();
         double c = line.getC();
-        return Math.abs((a * x + b * y + c) / Math.sqrt(a * a + b * b));
+        double l1=distanceBetweenTwoPoints(line.getPoint1(),line.getPoint2());
+        double l2=distanceBetweenTwoPoints(line.getPoint1(),point);
+        double l3=distanceBetweenTwoPoints(line.getPoint2(),point);
+        if(Math.pow(l2,2)>=Math.pow(l1,2)+Math.pow(l3,2))
+        {
+            return l3;
+        }
+        else if(Math.pow(l3,2)>=Math.pow(l2,2)+Math.pow(l1,2)){
+            return l2;
+        }
+        else {
+            return Math.abs((a * x + b * y + c) / Math.sqrt(a * a + b * b));
+        }
     }
 
     public static List<Double> binaryLinearEquationGroup(double a1, double b1, double c1,
@@ -60,4 +73,8 @@ public class MathUtils {
         }
         return oddNodes;
     }
+
+
+
+
 }

@@ -2,15 +2,19 @@ package physics.geometry;
 
 import com.google.common.collect.Lists;
 import lombok.Data;
+import physics.Vector;
+import physics.interfaces.CollisionInterface;
+import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
 import physics.interfaces.PrintInterface;
 import physics.math.MathUtils;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 @Data
-public class RectangleGeometry extends TwoPointGeometry implements PrintInterface, OperateInterface {
+public class RectangleGeometry extends TwoPointGeometry implements PrintInterface, OperateInterface,MotionInterface,CollisionInterface {
     protected double width;
     protected double height;
 
@@ -102,5 +106,46 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
         sb.append("]\n");
 
         return sb.toString();
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void setRotationSpeed(PointGeometry rotateCenter, double speed) {
+
+    }
+
+    @Override
+    public void setInstantaneousAcceleration(Vector acceleration) {
+
+    }
+
+    @Override
+    public boolean onCollision(CircleGeometry ball) {
+        if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //top
+                point1,new PointGeometry(point2.getX(),point1.getY())))<= ball.r){
+            ball.setInstantaneousAcceleration(new Vector(0,-2*ball.getVelocity().getY()));
+            return true;
+        }
+        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //left
+                point1,new PointGeometry(point1.getX(),point2.getY())))<= ball.r){
+            ball.setInstantaneousAcceleration(new Vector(-2*ball.getVelocity().getX(),0));
+            return true;
+        }
+        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //bottom
+                point2,new PointGeometry(point1.getX(),point2.getY())))<= ball.r){
+            ball.setInstantaneousAcceleration(new Vector(-2*ball.getVelocity().getX(),0));
+            return true;
+        }
+        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //right
+                point2,new PointGeometry(point2.getX(),point1.getY())))<= ball.r){
+            ball.setInstantaneousAcceleration(new Vector(0,-2*ball.getVelocity().getY()));
+            return true;
+        }
+
+        return false;
     }
 }

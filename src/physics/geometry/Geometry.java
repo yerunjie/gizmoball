@@ -9,6 +9,8 @@ import java.util.List;
 @Data
 public abstract class Geometry implements Cloneable {
     private static int count = 0;
+    public static int FRAMES_PER_SECOND = 100;
+
     protected Vector constantAcceleration;
     protected double frictionCoefficient;
     protected Vector velocity;

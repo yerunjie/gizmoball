@@ -1,6 +1,7 @@
 package physics;
 
 import lombok.Data;
+import physics.geometry.LineGeometry;
 
 @Data
 public class Vector implements Cloneable {
@@ -40,9 +41,14 @@ public class Vector implements Cloneable {
         return temp == 0 ? 0 : Math.sqrt(temp);
     }
 
-    public void plus(Vector another) {
+    public Vector plus(Vector another) {
         x += another.x;
         y += another.y;
+        return new Vector(x,y);
+    }
+
+    public Vector takeFrom(Vector another) {
+        return new Vector(this.x-another.x,this.y-another.y);
     }
 
     public Vector multiplyScalar(double s) {
@@ -54,6 +60,30 @@ public class Vector implements Cloneable {
     public Vector(Vector another) {
         x = another.x;
         y = another.y;
+    }
+
+    public double dotProduct(Vector v1,Vector v2){
+        return v1.getX()*v2.getX()+v1.getY()*v2.getY();
+    }
+
+    public Vector negate(){
+        return new Vector(-x,-y);
+    }
+
+    public Vector projection(LineGeometry line){
+        Vector lineVector=new Vector(line.getPoint1().getX()-line.getPoint2().getX(),
+                line.getPoint1().getY()-line.getPoint2().getY());
+        if(dotProduct(lineVector,this)==0) return new Vector(0,0);
+        if(dotProduct(lineVector,this)<0){
+            double proNorm=Math.abs(dotProduct(lineVector,this))/lineVector.getNorm();
+            return new Vector(-lineVector.getX()/lineVector.getNorm()*proNorm,
+                    -lineVector.getY()/lineVector.getNorm()*proNorm);
+        }
+        else {
+                double proNorm=Math.abs(dotProduct(lineVector,this))/lineVector.getNorm();
+                return new Vector(lineVector.getX()/lineVector.getNorm()*proNorm,
+                        lineVector.getY()/lineVector.getNorm()*proNorm);
+            }
     }
 
 }
