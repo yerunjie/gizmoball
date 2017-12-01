@@ -7,6 +7,7 @@ import physics.Vector;
 import physics.geometry.*;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.MotionInterface;
+import physics.interfaces.OperateInterface;
 import physics.interfaces.PrintInterface;
 import physics.math.MathUtils;
 
@@ -28,6 +29,7 @@ public class GamePanel extends JPanel {
     private List<MotionInterface> motionInterfaces;
     private List<CollisionInterface> collisionInterfaces;
     private AnimationEventListener eventListener;
+    private ReEditEventListener reEditEventListener;
     private Map<Pair<Integer, Integer>, List<Geometry>> obstacleIndex;
     private int status;
 
@@ -51,6 +53,9 @@ public class GamePanel extends JPanel {
 
     public void addObstacle(Geometry newObstacle) {
         obstacle = newObstacle;
+        if (reEditEventListener!=null) {
+            removeReEditListener();
+        }
         EditEventListener editEventListener = getEditEventListener(newObstacle);
         addMouseListener(editEventListener);
         addMouseMotionListener(editEventListener);
@@ -60,6 +65,9 @@ public class GamePanel extends JPanel {
 
     public void addBall(CircleGeometry ball) {
         this.ball = ball;
+        if (reEditEventListener!=null) {
+            removeReEditListener();
+        }
         EditEventListener editEventListener = getEditEventListener(ball);
         addMouseListener(editEventListener);
         addMouseMotionListener(editEventListener);
@@ -69,11 +77,12 @@ public class GamePanel extends JPanel {
 
 
     public void endAddObstacle() {
-        timer.stop();
-        obstacles.add(obstacle);
-
-        obstacle = null;
-        playRoom.setEditMode(true);
+        if (!obstacles.contains(obstacle)){
+            timer.stop();
+            obstacles.add(obstacle);
+            obstacle = null;
+            playRoom.setEditMode(true);
+        }
     }
 
     public void startGame() {
@@ -103,6 +112,9 @@ public class GamePanel extends JPanel {
             e.printStackTrace();
         }
         status = 2;
+        if (reEditEventListener!=null) {
+            removeReEditListener();
+        }
         eventListener = new AnimationEventListener();
         addMouseListener(eventListener);
         addMouseMotionListener(eventListener);
@@ -202,6 +214,23 @@ public class GamePanel extends JPanel {
         }
     }
 
+    private void addReEditListener(){
+        reEditEventListener = new ReEditEventListener();
+        addMouseListener(reEditEventListener);
+        addMouseMotionListener(reEditEventListener);
+        addMouseWheelListener(reEditEventListener);
+        timer = new Timer(1000 / FRAMES_PER_SECOND, reEditEventListener);
+        timer.start();
+    }
+
+    private void removeReEditListener(){
+        timer.stop();
+        removeMouseListener(reEditEventListener);
+        removeMouseMotionListener(reEditEventListener);
+        removeMouseWheelListener(reEditEventListener);
+        reEditEventListener = null;
+    }
+
     abstract class EditEventListener extends MouseAdapter implements MouseMotionListener, ActionListener {
         protected int count;
         protected int currentCount;
@@ -221,6 +250,7 @@ public class GamePanel extends JPanel {
             }
             removeMouseListener(this);
             removeMouseMotionListener(this);
+            addReEditListener();
         }
 
         @Override
@@ -230,7 +260,6 @@ public class GamePanel extends JPanel {
 
         @Override
         public void mousePressed(MouseEvent e) {
-
         }
 
         @Override
@@ -239,7 +268,6 @@ public class GamePanel extends JPanel {
         }
 
         public void mouseDragged(MouseEvent e) {
-
         }
 
 
@@ -262,7 +290,7 @@ public class GamePanel extends JPanel {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-
+            System.out.println("clickTwo" + e.getSource());
         }
 
         @Override
@@ -277,6 +305,7 @@ public class GamePanel extends JPanel {
 
         @Override
         public void mouseDragged(MouseEvent e) {
+            System.out.println("draggingTwo" + e.getSource());
             if (pointGeometries.size() == 1) {
                 pointGeometries.add(new PointGeometry(e.getPoint()));
             } else {
@@ -335,6 +364,7 @@ public class GamePanel extends JPanel {
 
         @Override
         public void mouseDragged(MouseEvent e) {
+            System.out.println("draggingPoly" + e.getSource());
             while (pointGeometries.size() > currentCount) {
                 pointGeometries.remove(currentCount);
             }
@@ -348,4 +378,75 @@ public class GamePanel extends JPanel {
             mouseDragged(e);
         }
     }
+
+
+    class ReEditEventListener extends MouseAdapter implements MouseMotionListener, ActionListener {
+        protected OperateInterface target = null;
+        protected PointGeometry startPoint = null;
+
+        ReEditEventListener() {
+        }
+
+        protected void end() {
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            System.out.println("click");
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            System.out.println("press"+e.getX());
+            target = null;
+            PointGeometry point = new PointGeometry(e.getX(),e.getY());
+            if (ball!=null && ball.isInside(point)){
+                target = ball;
+                startPoint = point;
+            } else {
+                for (Geometry o : obstacles){
+                    if (o instanceof OperateInterface && ((OperateInterface) o).isInside(point)){
+                        target = (OperateInterface) o;
+                        startPoint = point;
+                    } else {
+                        System.out.println("该组件无法重编辑");
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            System.out.println("release " +e.getX());
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            System.out.println(obstacles.size());
+            PointGeometry point = new PointGeometry(e.getX(),e.getY());
+            System.out.println("drag from " + startPoint.getX() + " to " + point.getX());
+            target.move(point.getX() - startPoint.getX(), point.getY() - startPoint.getY());
+            startPoint.setX(point.getX());
+            startPoint.setY(point.getY());
+            //update();
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent e){
+            System.out.println("滚动了" + e.getScrollAmount());
+            if (target!=null){
+                target.zoom(e.getScrollAmount() * 1.1);
+            }
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            update();
+        }
+    }
+
 }
