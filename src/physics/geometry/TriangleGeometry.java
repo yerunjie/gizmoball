@@ -1,15 +1,20 @@
 package physics.geometry;
 
+import gizmo.GamePanel;
 import lombok.Data;
+import physics.Vector;
 import physics.interfaces.CollisionInterface;
+import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
 import physics.interfaces.PrintInterface;
+import physics.math.MathUtils;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class TriangleGeometry extends Geometry implements PrintInterface,OperateInterface {
+public class TriangleGeometry extends Geometry implements PrintInterface,OperateInterface,MotionInterface {
     private PointGeometry point1;
     private PointGeometry point2;
     private PointGeometry point3;
@@ -32,11 +37,26 @@ public class TriangleGeometry extends Geometry implements PrintInterface,Operate
         ypoints[0] = (int) point1.y;
         ypoints[1] = (int) point2.y;
         ypoints[2] = (int) point3.y;
+        temp = new ArrayList<>();
+        temp.add(this.point1);
+        temp.add(this.point2);
+        temp.add(this.point3);
     }
 
     @Override
     public void move(double dx, double dy) {
-
+        point1.x += dx;
+        point1.y += dy;
+        point2.x += dx;
+        point2.y += dy;
+        point3.x += dx;
+        point3.y += dy;
+//        List<PointGeometry> tmp = getTemp();
+//        for (PointGeometry p : tmp) {
+//            p.x += dx;
+//            p.y += dy;
+//        }
+        reset();
     }
 
     @Override
@@ -46,12 +66,31 @@ public class TriangleGeometry extends Geometry implements PrintInterface,Operate
 
     @Override
     public void rotate(double angle) {
-
+        PointGeometry center = new PointGeometry((xpoints[0] + xpoints[1] + xpoints[2])/3,
+                (ypoints[0] + ypoints[1] + ypoints[2])/3);
+        MathUtils.rotatePoint(point1,center,angle);
+        MathUtils.rotatePoint(point2,center,angle);
+        MathUtils.rotatePoint(point3,center,angle);
+        for (PointGeometry p : temp) {
+            MathUtils.rotatePoint(p,center,angle);
+        }
     }
 
     @Override
     public void zoom(double ratio) {
-
+        PointGeometry center = new PointGeometry((xpoints[0] + xpoints[1] + xpoints[2])/3,
+                                                (ypoints[0] + ypoints[1] + ypoints[2])/3);
+        point1.x = (point1.x-center.x)*ratio + center.x;
+        point1.y = (point1.y-center.y)*ratio + center.y;
+        point2.x = (point2.x-center.x)*ratio + center.x;
+        point2.y = (point2.y-center.y)*ratio + center.y;
+        point3.x = (point3.x-center.x)*ratio + center.x;
+        point3.y = (point3.y-center.y)*ratio + center.y;
+        reset();
+//        for (PointGeometry p : temp) {
+//            p.x += (p.x-center.x)*ratio + center.x;
+//            p.y += (p.y-center.y)*ratio + center.y;
+//        }
     }
 
     @Override
@@ -130,5 +169,31 @@ public class TriangleGeometry extends Geometry implements PrintInterface,Operate
         sb.append("]\n");
 
         return sb.toString();
+    }
+
+    @Override
+    public void update() {
+        point1.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
+        point1.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
+        point2.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
+        point2.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
+        point3.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
+        point3.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
+        reset();
+        for (PointGeometry p : temp) {
+            p.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
+            p.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
+        }
+        velocity.plus(new Vector(constantAcceleration).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
+    }
+
+    @Override
+    public void setRotationSpeed(PointGeometry rotateCenter, double speed) {
+
+    }
+
+    @Override
+    public void setInstantaneousAcceleration(Vector acceleration) {
+        velocity.plus(acceleration);
     }
 }
