@@ -1,6 +1,7 @@
 package physics.geometry;
 
 import com.google.common.collect.Lists;
+import gizmo.GamePanel;
 import lombok.Data;
 import physics.Vector;
 import physics.interfaces.CollisionInterface;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
+
 public class RectangleGeometry extends TwoPointGeometry implements PrintInterface, OperateInterface,MotionInterface,CollisionInterface {
     protected double width;
     protected double height;
@@ -27,11 +29,7 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
     private void resetWidthAndHeight() {
         width = point2.x - point1.x;
         height = point2.y - point1.y;
-        temp = Lists.newArrayList();
-        temp.add(point1);
-        temp.add(new PointGeometry(point1.x > point2.x ? point1.x : point2.x, point1.y < point2.y ? point1.y : point2.y));
-        temp.add(point2);
-        temp.add(new PointGeometry(point1.x < point2.x ? point1.x : point2.x, point1.y > point2.y ? point1.y : point2.y));
+
     }
 
     @Override
@@ -51,12 +49,27 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
         PointGeometry point2 = this.point2;
         this.point1 = new PointGeometry(point1.x < point2.x ? point1.x : point2.x, point1.y < point2.y ? point1.y : point2.y);
         this.point2 = new PointGeometry(point1.x > point2.x ? point1.x : point2.x, point1.y > point2.y ? point1.y : point2.y);
+        temp = Lists.newArrayList();
+        temp.add(point1);
+        temp.add(new PointGeometry(point1.x > point2.x ? point1.x : point2.x, point1.y < point2.y ? point1.y : point2.y));
+        temp.add(point2);
+        temp.add(new PointGeometry(point1.x < point2.x ? point1.x : point2.x, point1.y > point2.y ? point1.y : point2.y));
         resetWidthAndHeight();
     }
 
     @Override
     public void move(double dx, double dy) {
-
+        point1.x += dx;
+        point1.y += dy;
+        point2.x += dx;
+        point2.y += dy;
+        reset();
+        //reset会设置
+//        List<PointGeometry> tmp = getTemp();
+//        for (PointGeometry p : tmp) {
+//            p.x += dx;
+//            p.y += dy;
+//        }
     }
 
     @Override
@@ -66,12 +79,31 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
 
     @Override
     public void rotate(double angle) {
+        PointGeometry center = new PointGeometry((temp.get(0).getX() + temp.get(2).getX())/2,
+                (temp.get(0).getY() + temp.get(2).getY())/2);
+        for (PointGeometry p : temp) {
+            MathUtils.rotatePoint(p,center,angle);
+        }
 
     }
 
     @Override
     public void zoom(double ratio) {
-
+        PointGeometry center = new PointGeometry((temp.get(0).getX() + temp.get(2).getX())/2,
+                (temp.get(0).getY() + temp.get(2).getY())/2);
+        point1.x = (point1.x-center.x)*ratio + center.x;
+        point1.y = (point1.y-center.y)*ratio + center.y;
+        point2.x = (point2.x-center.x)*ratio + center.x;
+        point2.y = (point2.y-center.y)*ratio + center.y;
+//        for (PointGeometry p : temp) {
+//            p.x += (p.x-center.x)*ratio + center.x;
+//            p.y += (p.y-center.y)*ratio + center.y;
+//        }
+//        width = temp.get(3).x - temp.get(0).x;
+//        height = temp.get(3).y - temp.get(0).y;
+//        width = Math.sqrt(Math.pow(temp.get(1).x - temp.get(0).x, 2) + Math.pow(temp.get(1).y - temp.get(0).y, 2));
+//        height = Math.sqrt(Math.pow(temp.get(0).x - temp.get(2).x, 2) + Math.pow(temp.get(0).y - temp.get(2).y, 2));
+        reset();
     }
 
     @Override
@@ -110,7 +142,15 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
 
     @Override
     public void update() {
-
+        point1.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
+        point1.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
+        point2.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
+        point2.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
+        for (PointGeometry p : temp) {
+            p.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
+            p.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
+        }
+        velocity.plus(new Vector(constantAcceleration).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
     }
 
     @Override
@@ -120,7 +160,7 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
 
     @Override
     public void setInstantaneousAcceleration(Vector acceleration) {
-
+        velocity.plus(acceleration);
     }
 
     @Override
@@ -172,6 +212,4 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
 
         return false;
     }
-
-
 }

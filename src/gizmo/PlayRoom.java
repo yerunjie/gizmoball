@@ -26,6 +26,7 @@ public class PlayRoom extends JFrame {
         addFlipper.setEnabled(mode);
         addTriangle.setEnabled(mode);
         addBall.setEnabled(mode);
+        addCircle.setEnabled(mode);
         addRectangle.setEnabled(mode);
     }
 

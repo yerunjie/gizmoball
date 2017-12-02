@@ -71,6 +71,7 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
 
     @Override
     public void update() {
+        super.update();
         center.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
         center.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
         velocity.plus(new Vector(constantAcceleration).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
@@ -93,5 +94,16 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
             return true;
         }
         return false;
+    }
+  
+    public void move(double dx, double dy){
+        super.move(dx,dy);
+        reset();
+    }
+
+    @Override
+    public void zoom(double ratio){
+        super.zoom(ratio);
+        reset();
     }
 }

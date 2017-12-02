@@ -49,6 +49,13 @@ public class MathUtils {
         }
     }
 
+    public static void rotatePoint(PointGeometry p, PointGeometry center, double angle) {
+        double tmpx = p.getX();
+        double tmpy = p.getY();
+        p.setX((tmpx - center.getX())*Math.cos(angle) - (tmpy - center.getY())*Math.sin(angle) + center.getX());
+        p.setY((tmpx - center.getX())*Math.sin(angle) + (tmpy - center.getY())*Math.cos(angle) + center.getY());
+    }
+
     public static List<Double> binaryLinearEquationGroup(double a1, double b1, double c1,
                                                          double a2, double b2, double c2) {
         c1 = -c1;
