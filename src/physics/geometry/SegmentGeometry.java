@@ -2,18 +2,22 @@ package physics.geometry;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import physics.Vector;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.PrintInterface;
 import physics.math.MathUtils;
 
 import java.awt.*;
+import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SegmentGeometry extends LineGeometry implements CollisionInterface{
 
-    public SegmentGeometry(PointGeometry point1, PointGeometry point2) {
+    private boolean topbottom;
+    public SegmentGeometry(PointGeometry point1, PointGeometry point2,boolean topbottom) {
         super(point1, point2);
+        this.topbottom=topbottom;
     }
 
 
@@ -33,11 +37,14 @@ public class SegmentGeometry extends LineGeometry implements CollisionInterface{
 
     @Override
     public boolean onCollision(CircleGeometry ball) {
-        if(MathUtils.calculatePointToLineDistance(ball.getCenter(),this)<=ball.getR()){
-            ball.setInstantaneousAcceleration(
-                    ball.getVelocity().takeFrom(
-                            ball.getVelocity().projection(this)).negate().multiplyScalar(2)
-            );
+
+        if(MathUtils.calculatePointToLineDistance(ball.getCenter(),this).getDistance()<=ball.getR()){
+            if(this.topbottom==true){
+                ball.setInstantaneousAcceleration(new Vector(0,-ball.getVelocity().getY()*2));
+            }
+            else{
+                ball.setInstantaneousAcceleration(new Vector(-ball.getVelocity().getX()*2,0));
+            }
             return true;
         }
         return false;

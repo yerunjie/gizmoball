@@ -1,6 +1,7 @@
 package physics.geometry;
 
 import lombok.Data;
+import physics.Vector;
 
 import java.util.List;
 
@@ -54,4 +55,20 @@ public class LineGeometry extends TwoPointGeometry {
         return sb.toString();
     }
 
+    public static void lineCollisionProcess(int collisionPoint,CircleGeometry ball,PointGeometry p1,PointGeometry p2){
+        if (collisionPoint==1){
+            ball.setInstantaneousAcceleration(
+                    ball.getVelocity().takeFrom(
+                            ball.getVelocity().projection(new LineGeometry(p1,p2))).negate().multiplyScalar(2)
+            );
+        }
+        else if (collisionPoint==2){
+            Vector pro=ball.getVelocity().projection(new LineGeometry(ball.getCenter(),p1));
+            ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(2));
+        }
+        else {
+            Vector pro=ball.getVelocity().projection(new LineGeometry(ball.getCenter(),p2));
+            ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(2));
+        }
+    }
 }

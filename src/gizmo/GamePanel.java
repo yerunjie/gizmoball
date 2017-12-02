@@ -79,18 +79,18 @@ public class GamePanel extends JPanel {
         flippers = Lists.newArrayList();
         motionInterfaces = Lists.newArrayList();
         collisionInterfaces = Lists.newArrayList();
-        obstacles.add(new SegmentGeometry(new PointGeometry(10,10),new PointGeometry(10,650)));
-        obstacles.add(new SegmentGeometry(new PointGeometry(10,650),new PointGeometry(690,650)));
-        obstacles.add(new SegmentGeometry(new PointGeometry(690,650),new PointGeometry(690,10)));
-        obstacles.add(new SegmentGeometry(new PointGeometry(690,10),new PointGeometry(10,10)));
+        obstacles.add(new SegmentGeometry(new PointGeometry(10,10),new PointGeometry(10,650),false));
+        obstacles.add(new SegmentGeometry(new PointGeometry(10,650),new PointGeometry(690,650),true));
+        obstacles.add(new SegmentGeometry(new PointGeometry(690,650),new PointGeometry(690,10),false));
+        obstacles.add(new SegmentGeometry(new PointGeometry(690,10),new PointGeometry(10,10),true));
 
         if (ball == null) {
             throw new RuntimeException("ball has not place");
         }
         try {
             tempBall = ball.clone();
-            tempBall.setConstantAcceleration(new Vector(0, 0));
-            tempBall.setVelocity(new Vector(50, 50));
+            tempBall.setConstantAcceleration(new Vector(0, 70));
+            tempBall.setVelocity(new Vector(0, 0));
             motionInterfaces.add(tempBall);
             for (Geometry geometry : obstacles) {
                 Geometry clone = (Geometry)geometry.clone();

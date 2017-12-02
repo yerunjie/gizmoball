@@ -7,6 +7,7 @@ import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
 import physics.interfaces.PrintInterface;
 import physics.math.MathUtils;
+import physics.math.PointToLine;
 
 import java.awt.*;
 import java.util.List;
@@ -151,29 +152,25 @@ public class TriangleGeometry extends Geometry implements PrintInterface,Operate
 
     @Override
     public boolean onCollision(CircleGeometry ball) {
-        if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(
-                point1,point2))<= ball.r){
-            Vector projection=ball.getVelocity().projection(new LineGeometry(point1,point2));
-            Vector subVector=ball.getVelocity().takeFrom(projection);
-            ball.setInstantaneousAcceleration(subVector.negate().multiplyScalar(2));
+        PointToLine p1p2=MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(
+                point1,point2));
+        if(p1p2.getDistance()<= ball.r){
+            LineGeometry.lineCollisionProcess(p1p2.getCollisionPoint(), ball,point1,point2);
             return true;
         }
-        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(
-                point3,point2))<= ball.r){
-            ball.setInstantaneousAcceleration(
-                    ball.getVelocity().takeFrom(
-                            ball.getVelocity().projection(new LineGeometry(point3,point2))).negate().multiplyScalar(2)
-            );
+        PointToLine p2p3=MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(
+                point2,point3));
+        if(p2p3.getDistance()<= ball.r){
+            LineGeometry.lineCollisionProcess(p2p3.getCollisionPoint(), ball,point2,point3);
             return true;
         }
-        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(
-                point1,point3))<= ball.r){
-            ball.setInstantaneousAcceleration(
-                    ball.getVelocity().takeFrom(
-                            ball.getVelocity().projection(new LineGeometry(point1,point3))).negate().multiplyScalar(2)
-            );
+        PointToLine p1p3=MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(
+                point1,point3));
+        if(p1p3.getDistance()<= ball.r){
+            LineGeometry.lineCollisionProcess(p1p3.getCollisionPoint(), ball,point3,point1);
             return true;
         }
+
         else return false;
     }
 }

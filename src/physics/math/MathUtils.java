@@ -5,7 +5,9 @@ import physics.Vector;
 import physics.geometry.LineGeometry;
 import physics.geometry.PointGeometry;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MathUtils {
     public static final double APPROXIMATE_DISTANCE = 5;
@@ -20,7 +22,12 @@ public class MathUtils {
         return distanceBetweenTwoPoints(p1, p2) < APPROXIMATE_DISTANCE;
     }
 
-    public static double calculatePointToLineDistance(PointGeometry point, LineGeometry line) {
+    /**
+     * 计算球心与线段距离
+     * 1.边 2.point1 3.point2
+     */
+
+    public static PointToLine calculatePointToLineDistance(PointGeometry point, LineGeometry line) {
         double x = point.getX();
         double y = point.getY();
         double a = line.getA();
@@ -31,13 +38,14 @@ public class MathUtils {
         double l3=distanceBetweenTwoPoints(line.getPoint2(),point);
         if(Math.pow(l2,2)>=Math.pow(l1,2)+Math.pow(l3,2))
         {
-            return l3;
+            return new PointToLine(l3,3);
         }
         else if(Math.pow(l3,2)>=Math.pow(l2,2)+Math.pow(l1,2)){
-            return l2;
+            return new PointToLine(l2,2);
         }
         else {
-            return Math.abs((a * x + b * y + c) / Math.sqrt(a * a + b * b));
+            double distance=Math.abs((a * x + b * y + c) / Math.sqrt(a * a + b * b));
+            return new PointToLine(distance,1);
         }
     }
 

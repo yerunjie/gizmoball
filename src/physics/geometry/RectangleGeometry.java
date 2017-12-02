@@ -125,27 +125,53 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
 
     @Override
     public boolean onCollision(CircleGeometry ball) {
+
         if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //top
-                point1,new PointGeometry(point2.getX(),point1.getY())))<= ball.r){
-            ball.setInstantaneousAcceleration(new Vector(0,-2*ball.getVelocity().getY()));
+                point1,new PointGeometry(point2.getX(),point1.getY()))).getDistance()<= ball.r){
+            LineGeometry.lineCollisionProcess(
+                    MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(point1,new PointGeometry(point2.getX(),point1.getY()))).getCollisionPoint(),
+                    ball,point1,new PointGeometry(point2.getX(),point1.getY()));
             return true;
         }
-        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //left
-                point1,new PointGeometry(point1.getX(),point2.getY())))<= ball.r){
-            ball.setInstantaneousAcceleration(new Vector(-2*ball.getVelocity().getX(),0));
+        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //top
+                point1,new PointGeometry(point1.getX(),point2.getY()))).getDistance()<= ball.r){
+            LineGeometry.lineCollisionProcess(
+                    MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(point1,new PointGeometry(point1.getX(),point2.getY()))).getCollisionPoint(),
+                    ball,point1,new PointGeometry(point1.getX(),point2.getY()));
             return true;
         }
-        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //bottom
-                point2,new PointGeometry(point1.getX(),point2.getY())))<= ball.r){
-            ball.setInstantaneousAcceleration(new Vector(-2*ball.getVelocity().getX(),0));
+        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //top
+                point2,new PointGeometry(point1.getX(),point2.getY()))).getDistance()<= ball.r){
+            LineGeometry.lineCollisionProcess(
+                    MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(point2,new PointGeometry(point1.getX(),point2.getY()))).getCollisionPoint(),
+                    ball,point2,new PointGeometry(point1.getX(),point2.getY()));
             return true;
         }
-        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //right
-                point2,new PointGeometry(point2.getX(),point1.getY())))<= ball.r){
-            ball.setInstantaneousAcceleration(new Vector(0,-2*ball.getVelocity().getY()));
+        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //top
+                point2,new PointGeometry(point2.getX(),point1.getY()))).getDistance()<= ball.r){
+            LineGeometry.lineCollisionProcess(
+                    MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry(point2,new PointGeometry(point2.getX(),point1.getY()))).getCollisionPoint(),
+                    ball,point2,new PointGeometry(point2.getX(),point1.getY()));
             return true;
         }
+//        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //left
+//                point1,new PointGeometry(point1.getX(),point2.getY())))<= ball.r){
+//            ball.setInstantaneousAcceleration(new Vector(-2*ball.getVelocity().getX(),0));
+//            return true;
+//        }
+//        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //bottom
+//                point2,new PointGeometry(point1.getX(),point2.getY())))<= ball.r){
+//            ball.setInstantaneousAcceleration(new Vector(0,-2*ball.getVelocity().getY()));
+//            return true;
+//        }
+//        else if(MathUtils.calculatePointToLineDistance(ball.center,new LineGeometry( //right
+//                point2,new PointGeometry(point2.getX(),point1.getY())))<= ball.r){
+//            ball.setInstantaneousAcceleration(new Vector(-2*ball.getVelocity().getX(),0));
+//            return true;
+//        }
 
         return false;
     }
+
+
 }
