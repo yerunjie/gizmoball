@@ -36,6 +36,17 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
     }
 
     @Override
+    public PointGeometry getCenter() {
+        return center;
+    }
+
+    @Override
+    public void printEditBound(Graphics g) {
+        g.setColor(Color.cyan);
+        g.drawRect((int) (center.x - r), (int) (center.y - r), 2 * (int) r, 2 * (int) r);
+    }
+
+    @Override
     public boolean isInside(PointGeometry pointGeometry) {
         return r > distanceBetweenTwoPoints(center, pointGeometry);
     }
@@ -95,14 +106,14 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
         }
         return false;
     }
-  
-    public void move(double dx, double dy){
-        super.move(dx,dy);
+
+    public void move(double dx, double dy) {
+        super.move(dx, dy);
         reset();
     }
 
     @Override
-    public void zoom(double ratio){
+    public void zoom(double ratio) {
         super.zoom(ratio);
         reset();
     }

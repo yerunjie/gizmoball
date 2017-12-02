@@ -4,7 +4,11 @@ import com.google.common.collect.Lists;
 import lombok.Data;
 import physics.Vector;
 
+import java.awt.*;
+import java.util.IntSummaryStatistics;
 import java.util.List;
+
+import static gizmo.Constant.centerPointRadius;
 
 @Data
 public abstract class Geometry implements Cloneable {
@@ -32,6 +36,18 @@ public abstract class Geometry implements Cloneable {
     }
 
     public abstract void reset(List<PointGeometry> pointGeometries);
+
+
+    public abstract PointGeometry getCenter();
+
+    public void printEditBound(Graphics g) {
+        IntSummaryStatistics xStatistics = temp.stream().mapToInt(point -> (int) point.x).summaryStatistics();
+        IntSummaryStatistics yStatistics = temp.stream().mapToInt(point -> (int) point.y).summaryStatistics();
+        g.setColor(Color.cyan);
+        g.drawRect(xStatistics.getMin(), yStatistics.getMin(), xStatistics.getMax() - xStatistics.getMin(), yStatistics.getMax() - yStatistics.getMin());
+        PointGeometry center = getCenter();
+        g.drawOval((int) center.x - centerPointRadius, (int) center.y - centerPointRadius, 2 * centerPointRadius, 2 * centerPointRadius);
+    }
 
     @Override
     public Geometry clone() {

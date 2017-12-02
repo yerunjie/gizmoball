@@ -49,4 +49,9 @@ public class PointGeometry extends Geometry {
 
         return sb.toString();
     }
+
+    @Override
+    public PointGeometry getCenter() {
+        return this;
+    }
 }

@@ -23,7 +23,8 @@ public class GamePanel extends JPanel {
     private PlayRoom playRoom;
     private Timer timer;
     private Geometry obstacle;
-    private CircleGeometry ball,tempBall;
+    protected OperateInterface target = null;
+    private CircleGeometry ball, tempBall;
     private List<Geometry> obstacles;
     private List<Flipper> flippers;
     private List<MotionInterface> motionInterfaces;
@@ -53,7 +54,7 @@ public class GamePanel extends JPanel {
 
     public void addObstacle(Geometry newObstacle) {
         obstacle = newObstacle;
-        if (reEditEventListener!=null) {
+        if (reEditEventListener != null) {
             removeReEditListener();
         }
         EditEventListener editEventListener = getEditEventListener(newObstacle);
@@ -65,7 +66,7 @@ public class GamePanel extends JPanel {
 
     public void addBall(CircleGeometry ball) {
         this.ball = ball;
-        if (reEditEventListener!=null) {
+        if (reEditEventListener != null) {
             removeReEditListener();
         }
         EditEventListener editEventListener = getEditEventListener(ball);
@@ -77,7 +78,7 @@ public class GamePanel extends JPanel {
 
 
     public void endAddObstacle() {
-        if (!obstacles.contains(obstacle)){
+        if (!obstacles.contains(obstacle)) {
             timer.stop();
             obstacles.add(obstacle);
             obstacle = null;
@@ -118,7 +119,7 @@ public class GamePanel extends JPanel {
             e.printStackTrace();
         }
         status = 2;
-        if (reEditEventListener!=null) {
+        if (reEditEventListener != null) {
             removeReEditListener();
         }
         eventListener = new AnimationEventListener();
@@ -150,14 +151,24 @@ public class GamePanel extends JPanel {
             case 1:
                 for (Geometry geometry : obstacles) {
                     if (geometry instanceof PrintInterface) {
-                        ((PrintInterface) geometry).print(Color.BLACK, g);
+                        if (target == geometry) {
+                            ((PrintInterface) geometry).print(Color.GREEN, g);
+                            target.printEditBound(g);
+                        } else {
+                            ((PrintInterface) geometry).print(Color.BLACK, g);
+                        }
                     }
                 }
                 if (obstacle != null && obstacle instanceof PrintInterface) {
                     ((PrintInterface) obstacle).drawing(Color.GREEN, g);
                 }
                 if (ball != null) {
-                    ball.drawing(Color.pink, g);
+                    if (ball == target) {
+                        ball.drawing(Color.GREEN, g);
+                        ball.printEditBound(g);
+                    } else {
+                        ball.drawing(Color.pink, g);
+                    }
                 }
                 break;
             case 2:
@@ -220,7 +231,7 @@ public class GamePanel extends JPanel {
         }
     }
 
-    private void addReEditListener(){
+    private void addReEditListener() {
         reEditEventListener = new ReEditEventListener();
         addMouseListener(reEditEventListener);
         addMouseMotionListener(reEditEventListener);
@@ -229,7 +240,7 @@ public class GamePanel extends JPanel {
         timer.start();
     }
 
-    private void removeReEditListener(){
+    private void removeReEditListener() {
         timer.stop();
         removeMouseListener(reEditEventListener);
         removeMouseMotionListener(reEditEventListener);
@@ -387,7 +398,6 @@ public class GamePanel extends JPanel {
 
 
     class ReEditEventListener extends MouseAdapter implements MouseMotionListener, ActionListener {
-        protected OperateInterface target = null;
         protected PointGeometry startPoint = null;
 
         ReEditEventListener() {
@@ -403,15 +413,18 @@ public class GamePanel extends JPanel {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            System.out.println("press"+e.getX());
+            System.out.println("press" + e.getX());
+            if (target != null) {
+
+            }
             target = null;
-            PointGeometry point = new PointGeometry(e.getX(),e.getY());
-            if (ball!=null && ball.isInside(point)){
+            PointGeometry point = new PointGeometry(e.getX(), e.getY());
+            if (ball != null && ball.isInside(point)) {
                 target = ball;
                 startPoint = point;
             } else {
-                for (Geometry o : obstacles){
-                    if (o instanceof OperateInterface && ((OperateInterface) o).isInside(point)){
+                for (Geometry o : obstacles) {
+                    if (o instanceof OperateInterface && ((OperateInterface) o).isInside(point)) {
                         target = (OperateInterface) o;
                         startPoint = point;
                     } else {
@@ -423,13 +436,14 @@ public class GamePanel extends JPanel {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            System.out.println("release " +e.getX());
+
+            System.out.println("release " + e.getX());
         }
 
         @Override
         public void mouseDragged(MouseEvent e) {
             System.out.println(obstacles.size());
-            PointGeometry point = new PointGeometry(e.getX(),e.getY());
+            PointGeometry point = new PointGeometry(e.getX(), e.getY());
             System.out.println("drag from " + startPoint.getX() + " to " + point.getX());
             target.move(point.getX() - startPoint.getX(), point.getY() - startPoint.getY());
             startPoint.setX(point.getX());
@@ -443,9 +457,9 @@ public class GamePanel extends JPanel {
         }
 
         @Override
-        public void mouseWheelMoved(MouseWheelEvent e){
+        public void mouseWheelMoved(MouseWheelEvent e) {
             System.out.println("滚动了" + e.getScrollAmount());
-            if (target!=null){
+            if (target != null) {
                 target.zoom(e.getScrollAmount() * 1.1);
             }
         }

@@ -14,6 +14,8 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
+import static gizmo.Constant.centerPointRadius;
+
 @Data
 
 public class RectangleGeometry extends TwoPointGeometry implements PrintInterface, OperateInterface,MotionInterface,CollisionInterface {
@@ -79,22 +81,20 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
 
     @Override
     public void rotate(double angle) {
-        PointGeometry center = new PointGeometry((temp.get(0).getX() + temp.get(2).getX())/2,
-                (temp.get(0).getY() + temp.get(2).getY())/2);
+        PointGeometry center = getCenter();
         for (PointGeometry p : temp) {
-            MathUtils.rotatePoint(p,center,angle);
+            MathUtils.rotatePoint(p, center, angle);
         }
-
     }
 
     @Override
     public void zoom(double ratio) {
-        PointGeometry center = new PointGeometry((temp.get(0).getX() + temp.get(2).getX())/2,
-                (temp.get(0).getY() + temp.get(2).getY())/2);
-        point1.x = (point1.x-center.x)*ratio + center.x;
-        point1.y = (point1.y-center.y)*ratio + center.y;
-        point2.x = (point2.x-center.x)*ratio + center.x;
-        point2.y = (point2.y-center.y)*ratio + center.y;
+        PointGeometry center = new PointGeometry((temp.get(0).getX() + temp.get(2).getX()) / 2,
+                (temp.get(0).getY() + temp.get(2).getY()) / 2);
+        point1.x = (point1.x - center.x) * ratio + center.x;
+        point1.y = (point1.y - center.y) * ratio + center.y;
+        point2.x = (point2.x - center.x) * ratio + center.x;
+        point2.y = (point2.y - center.y) * ratio + center.y;
 //        for (PointGeometry p : temp) {
 //            p.x += (p.x-center.x)*ratio + center.x;
 //            p.y += (p.y-center.y)*ratio + center.y;
@@ -109,6 +109,11 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
     @Override
     public boolean isInside(PointGeometry pointGeometry) {
         return MathUtils.isInside(temp, pointGeometry);
+    }
+
+    public PointGeometry getCenter() {
+        return new PointGeometry((temp.get(0).getX() + temp.get(2).getX()) / 2,
+                (temp.get(0).getY() + temp.get(2).getY()) / 2);
     }
 
     @Override
@@ -126,7 +131,7 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
 
     @Override
     public RectangleGeometry clone() {
-        return (RectangleGeometry)super.clone();
+        return (RectangleGeometry) super.clone();
     }
 
     @Override

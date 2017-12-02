@@ -11,11 +11,15 @@ import physics.math.MathUtils;
 import physics.math.PointToLine;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
+import java.util.IntSummaryStatistics;
 import java.util.List;
+
+import static gizmo.Constant.centerPointRadius;
 
 @Data
 
-public class TriangleGeometry extends Geometry implements PrintInterface,OperateInterface,MotionInterface,CollisionInterface {
+public class TriangleGeometry extends Geometry implements PrintInterface, OperateInterface, MotionInterface,CollisionInterface {
     private PointGeometry point1;
     private PointGeometry point2;
     private PointGeometry point3;
@@ -67,26 +71,24 @@ public class TriangleGeometry extends Geometry implements PrintInterface,Operate
 
     @Override
     public void rotate(double angle) {
-        PointGeometry center = new PointGeometry((xpoints[0] + xpoints[1] + xpoints[2])/3,
-                (ypoints[0] + ypoints[1] + ypoints[2])/3);
-        MathUtils.rotatePoint(point1,center,angle);
-        MathUtils.rotatePoint(point2,center,angle);
-        MathUtils.rotatePoint(point3,center,angle);
+        PointGeometry center = getCenter();
+        MathUtils.rotatePoint(point1, center, angle);
+        MathUtils.rotatePoint(point2, center, angle);
+        MathUtils.rotatePoint(point3, center, angle);
         for (PointGeometry p : temp) {
-            MathUtils.rotatePoint(p,center,angle);
+            MathUtils.rotatePoint(p, center, angle);
         }
     }
 
     @Override
     public void zoom(double ratio) {
-        PointGeometry center = new PointGeometry((xpoints[0] + xpoints[1] + xpoints[2])/3,
-                                                (ypoints[0] + ypoints[1] + ypoints[2])/3);
-        point1.x = (point1.x-center.x)*ratio + center.x;
-        point1.y = (point1.y-center.y)*ratio + center.y;
-        point2.x = (point2.x-center.x)*ratio + center.x;
-        point2.y = (point2.y-center.y)*ratio + center.y;
-        point3.x = (point3.x-center.x)*ratio + center.x;
-        point3.y = (point3.y-center.y)*ratio + center.y;
+        PointGeometry center = getCenter();
+        point1.x = (point1.x - center.x) * ratio + center.x;
+        point1.y = (point1.y - center.y) * ratio + center.y;
+        point2.x = (point2.x - center.x) * ratio + center.x;
+        point2.y = (point2.y - center.y) * ratio + center.y;
+        point3.x = (point3.x - center.x) * ratio + center.x;
+        point3.y = (point3.y - center.y) * ratio + center.y;
         reset();
 //        for (PointGeometry p : temp) {
 //            p.x += (p.x-center.x)*ratio + center.x;
@@ -109,6 +111,12 @@ public class TriangleGeometry extends Geometry implements PrintInterface,Operate
         }
 
         return oddNodes;
+    }
+
+    @Override
+    public PointGeometry getCenter() {
+        return new PointGeometry((xpoints[0] + xpoints[1] + xpoints[2]) / 3,
+                (ypoints[0] + ypoints[1] + ypoints[2]) / 3);
     }
 
     @Override
@@ -141,7 +149,7 @@ public class TriangleGeometry extends Geometry implements PrintInterface,Operate
     }
 
     @Override
-    public TriangleGeometry clone(){
+    public TriangleGeometry clone() {
         TriangleGeometry newObject = (TriangleGeometry) super.clone();
         newObject.setPoint1((PointGeometry) getPoint1().clone());
         newObject.setPoint2((PointGeometry) getPoint2().clone());
@@ -150,19 +158,19 @@ public class TriangleGeometry extends Geometry implements PrintInterface,Operate
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuffer sb = new StringBuffer("TriangleGeometry[\n");
         sb.append("super:").append(super.toString());
         sb.append("point1:").append(point1.toString());
         sb.append("point2:").append(point2.toString());
         sb.append("point3:").append(point3.toString());
         sb.append("xpoints:").append("[");
-        for (int i=0; i<xpoints.length; i++){
+        for (int i = 0; i < xpoints.length; i++) {
             sb.append(xpoints[i]).append(",");
         }
         sb.append("]\n");
         sb.append("ypoints:").append("[");
-        for (int i=0; i<ypoints.length; i++){
+        for (int i = 0; i < ypoints.length; i++) {
             sb.append(ypoints[i]).append(",");
         }
         sb.append("]\n");

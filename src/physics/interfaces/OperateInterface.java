@@ -2,6 +2,8 @@ package physics.interfaces;
 
 import physics.geometry.PointGeometry;
 
+import java.awt.*;
+
 public interface OperateInterface {
     void move(double dx, double dy);
 
@@ -13,4 +15,6 @@ public interface OperateInterface {
 
     boolean isInside(PointGeometry pointGeometry);
     //void setPosition(PointGeometry position);
+
+    void printEditBound(Graphics g);
 }

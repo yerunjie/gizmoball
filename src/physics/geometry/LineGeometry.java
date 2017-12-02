@@ -39,6 +39,11 @@ public class LineGeometry extends TwoPointGeometry {
     }*/
 
     @Override
+    public PointGeometry getCenter() {
+        return null;
+    }
+
+    @Override
     public LineGeometry clone(){
         return (LineGeometry)super.clone();
     }
