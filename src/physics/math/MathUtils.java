@@ -33,27 +33,24 @@ public class MathUtils {
         double a = line.getA();
         double b = line.getB();
         double c = line.getC();
-        double l1=distanceBetweenTwoPoints(line.getPoint1(),line.getPoint2());
-        double l2=distanceBetweenTwoPoints(line.getPoint1(),point);
-        double l3=distanceBetweenTwoPoints(line.getPoint2(),point);
-        if(Math.pow(l2,2)>=Math.pow(l1,2)+Math.pow(l3,2))
-        {
-            return new PointToLine(l3,3);
-        }
-        else if(Math.pow(l3,2)>=Math.pow(l2,2)+Math.pow(l1,2)){
-            return new PointToLine(l2,2);
-        }
-        else {
-            double distance=Math.abs((a * x + b * y + c) / Math.sqrt(a * a + b * b));
-            return new PointToLine(distance,1);
+        double l1 = distanceBetweenTwoPoints(line.getPoint1(), line.getPoint2());
+        double l2 = distanceBetweenTwoPoints(line.getPoint1(), point);
+        double l3 = distanceBetweenTwoPoints(line.getPoint2(), point);
+        if (Math.pow(l2, 2) >= Math.pow(l1, 2) + Math.pow(l3, 2)) {
+            return new PointToLine(l3, 3);
+        } else if (Math.pow(l3, 2) >= Math.pow(l2, 2) + Math.pow(l1, 2)) {
+            return new PointToLine(l2, 2);
+        } else {
+            double distance = Math.abs((a * x + b * y + c) / Math.sqrt(a * a + b * b));
+            return new PointToLine(distance, 1);
         }
     }
 
     public static void rotatePoint(PointGeometry p, PointGeometry center, double angle) {
         double tmpx = p.getX();
         double tmpy = p.getY();
-        p.setX((tmpx - center.getX())*Math.cos(angle) - (tmpy - center.getY())*Math.sin(angle) + center.getX());
-        p.setY((tmpx - center.getX())*Math.sin(angle) + (tmpy - center.getY())*Math.cos(angle) + center.getY());
+        p.setX((tmpx - center.getX()) * Math.cos(angle) - (tmpy - center.getY()) * Math.sin(angle) + center.getX());
+        p.setY((tmpx - center.getX()) * Math.sin(angle) + (tmpy - center.getY()) * Math.cos(angle) + center.getY());
     }
 
     public static List<Double> binaryLinearEquationGroup(double a1, double b1, double c1,
@@ -88,8 +85,6 @@ public class MathUtils {
         }
         return oddNodes;
     }
-
-
 
 
 }

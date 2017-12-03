@@ -1,6 +1,7 @@
 package physics.geometry;
 
 import com.google.common.collect.Lists;
+import gizmo.Constant;
 import lombok.Data;
 import physics.Vector;
 
@@ -30,7 +31,7 @@ public abstract class Geometry implements Cloneable {
     protected Geometry() {
         id = generateId();
         temp = Lists.newArrayList();
-        frictionCoefficient = 0;
+        frictionCoefficient = Constant.frictionCoefficient;
         constantAcceleration = new Vector(0, 0);
         velocity = new Vector(0, 0);
     }
@@ -56,6 +57,11 @@ public abstract class Geometry implements Cloneable {
             newObject = (Geometry) super.clone();
             newObject.setConstantAcceleration((Vector) getConstantAcceleration().clone());
             newObject.setVelocity((Vector) getVelocity().clone());
+            List<PointGeometry> newTemp = Lists.newArrayList();
+            for (PointGeometry pointGeometry : temp) {
+                newTemp.add(pointGeometry.clone());
+            }
+            newObject.setTemp(newTemp);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

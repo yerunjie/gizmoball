@@ -5,7 +5,7 @@ import physics.geometry.LineGeometry;
 
 @Data
 public class Vector implements Cloneable {
-    //public static final Vector ZERO = new Vector(0, 0);
+    public static final Vector ZERO = new Vector(0, 0);
     protected double x;
     protected double y;
 
@@ -36,6 +36,18 @@ public class Vector implements Cloneable {
         return sb.toString();
     }
 
+    public Vector setNorm(double norm) {
+        if (norm != 0 && getNorm() != 0) {
+            double r = norm / getNorm();
+            x = x * r;
+            y = y * r;
+        } else {
+            x = 0;
+            y = 0;
+        }
+        return this;
+    }
+
     public double getNorm() {
         double temp = x * x + y * y;
         return temp == 0 ? 0 : Math.sqrt(temp);
@@ -44,11 +56,11 @@ public class Vector implements Cloneable {
     public Vector plus(Vector another) {
         x += another.x;
         y += another.y;
-        return new Vector(x,y);
+        return new Vector(x, y);
     }
 
     public Vector takeFrom(Vector another) {
-        return new Vector(this.x-another.x,this.y-another.y);
+        return new Vector(this.x - another.x, this.y - another.y);
     }
 
     public Vector multiplyScalar(double s) {
@@ -62,28 +74,38 @@ public class Vector implements Cloneable {
         y = another.y;
     }
 
-    public double dotProduct(Vector v1,Vector v2){
-        return v1.getX()*v2.getX()+v1.getY()*v2.getY();
-    }
-
-    public Vector negate(){
-        return new Vector(-x,-y);
-    }
-
-    public Vector projection(LineGeometry line){
-        Vector lineVector=new Vector(line.getPoint1().getX()-line.getPoint2().getX(),
-                line.getPoint1().getY()-line.getPoint2().getY());
-        if(dotProduct(lineVector,this)==0) return new Vector(0,0);
-        if(dotProduct(lineVector,this)<0){
-            double proNorm=Math.abs(dotProduct(lineVector,this))/lineVector.getNorm();
-            return new Vector(-lineVector.getX()/lineVector.getNorm()*proNorm,
-                    -lineVector.getY()/lineVector.getNorm()*proNorm);
+    public Vector(Vector another, double norm) {
+        if (norm != 0 && another.getNorm() != 0) {
+            double r = norm / another.getNorm();
+            x = another.x * r;
+            y = another.y * r;
+        } else {
+            x = 0;
+            y = 0;
         }
-        else {
-                double proNorm=Math.abs(dotProduct(lineVector,this))/lineVector.getNorm();
-                return new Vector(lineVector.getX()/lineVector.getNorm()*proNorm,
-                        lineVector.getY()/lineVector.getNorm()*proNorm);
-            }
+    }
+
+    public double dotProduct(Vector v1, Vector v2) {
+        return v1.getX() * v2.getX() + v1.getY() * v2.getY();
+    }
+
+    public Vector negate() {
+        return new Vector(-x, -y);
+    }
+
+    public Vector projection(LineGeometry line) {
+        Vector lineVector = new Vector(line.getPoint1().getX() - line.getPoint2().getX(),
+                line.getPoint1().getY() - line.getPoint2().getY());
+        if (dotProduct(lineVector, this) == 0) return new Vector(0, 0);
+        if (dotProduct(lineVector, this) < 0) {
+            double proNorm = Math.abs(dotProduct(lineVector, this)) / lineVector.getNorm();
+            return new Vector(-lineVector.getX() / lineVector.getNorm() * proNorm,
+                    -lineVector.getY() / lineVector.getNorm() * proNorm);
+        } else {
+            double proNorm = Math.abs(dotProduct(lineVector, this)) / lineVector.getNorm();
+            return new Vector(lineVector.getX() / lineVector.getNorm() * proNorm,
+                    lineVector.getY() / lineVector.getNorm() * proNorm);
+        }
     }
 
 }

@@ -11,10 +11,12 @@ import physics.math.MathUtils;
 
 import java.awt.*;
 
+import static gizmo.Constant.acceleration;
+import static physics.Vector.ZERO;
 import static physics.math.MathUtils.distanceBetweenTwoPoints;
 
 @Data
-public class CircleGeometry extends RectangleGeometry implements PrintInterface, OperateInterface, MotionInterface,CollisionInterface {
+public class CircleGeometry extends RectangleGeometry implements PrintInterface, OperateInterface, MotionInterface, CollisionInterface {
     protected double r;
     protected PointGeometry center;
 
@@ -85,7 +87,11 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
         super.update();
         center.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
         center.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
-        velocity.plus(new Vector(constantAcceleration).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
+        if (constantAcceleration.equals(ZERO)) {
+            velocity.plus(new Vector(velocity).negate().setNorm(frictionCoefficient).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
+        } else {
+            velocity.plus(new Vector(constantAcceleration).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
+        }
     }
 
     @Override
@@ -99,9 +105,10 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
 
     @Override
     public boolean onCollision(CircleGeometry ball) {
-        if(MathUtils.distanceBetweenTwoPoints(ball.getCenter(),this.center)<=this.r+ball.getR()){
-            Vector pro=ball.getVelocity().projection(new LineGeometry(ball.getCenter(),this.center));
+        if (MathUtils.distanceBetweenTwoPoints(ball.getCenter(), this.center) <= this.r + ball.getR()) {
+            Vector pro = ball.getVelocity().projection(new LineGeometry(ball.getCenter(), this.center));
             ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(2));
+            setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;
         }
         return false;

@@ -24,7 +24,7 @@ public abstract class TwoPointGeometry extends Geometry {
     }
 
     @Override
-    public TwoPointGeometry clone(){
+    public TwoPointGeometry clone() {
         TwoPointGeometry newObject = (TwoPointGeometry) super.clone();
         newObject.setPoint1((PointGeometry) getPoint1().clone());
         newObject.setPoint2((PointGeometry) getPoint2().clone());
@@ -32,7 +32,7 @@ public abstract class TwoPointGeometry extends Geometry {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuffer sb = new StringBuffer("TwoPointGeometry[\n");
         sb.append("super:").append(super.toString());
         sb.append("point1:").append(point1.toString());

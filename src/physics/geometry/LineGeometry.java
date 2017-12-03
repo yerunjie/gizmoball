@@ -44,12 +44,12 @@ public class LineGeometry extends TwoPointGeometry {
     }
 
     @Override
-    public LineGeometry clone(){
-        return (LineGeometry)super.clone();
+    public LineGeometry clone() {
+        return (LineGeometry) super.clone();
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuffer sb = new StringBuffer("LineGeometry[\n");
         sb.append("super:").append(super.toString());
         sb.append("a:").append(a).append(";\n");
@@ -60,20 +60,23 @@ public class LineGeometry extends TwoPointGeometry {
         return sb.toString();
     }
 
-    public static void lineCollisionProcess(int collisionPoint,CircleGeometry ball,PointGeometry p1,PointGeometry p2){
-        if (collisionPoint==1){
-            ball.setInstantaneousAcceleration(
-                    ball.getVelocity().takeFrom(
-                            ball.getVelocity().projection(new LineGeometry(p1,p2))).negate().multiplyScalar(2)
+    public static Vector lineCollisionProcess(int collisionPoint, CircleGeometry ball, PointGeometry p1, PointGeometry p2) {
+        return lineCollisionProcess(collisionPoint, ball, p1, p2, 2);
+    }
+
+    public static Vector lineCollisionProcess(int collisionPoint, CircleGeometry ball, PointGeometry p1, PointGeometry p2, int scalar) {
+        Vector pro;
+        if (collisionPoint == 1) {
+            pro = ball.getVelocity().takeFrom(ball.getVelocity().projection(new LineGeometry(p1, p2)));
+            ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(scalar)
             );
+        } else if (collisionPoint == 2) {
+            pro = ball.getVelocity().projection(new LineGeometry(ball.getCenter(), p1));
+            ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(scalar));
+        } else {
+            pro = ball.getVelocity().projection(new LineGeometry(ball.getCenter(), p2));
+            ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(scalar));
         }
-        else if (collisionPoint==2){
-            Vector pro=ball.getVelocity().projection(new LineGeometry(ball.getCenter(),p1));
-            ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(2));
-        }
-        else {
-            Vector pro=ball.getVelocity().projection(new LineGeometry(ball.getCenter(),p2));
-            ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(2));
-        }
+        return pro;
     }
 }

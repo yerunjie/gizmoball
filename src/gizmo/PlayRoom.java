@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PlayRoom extends JFrame {
-    private static boolean gameState = false;
+    public static PlayRoom playRoom;
     private JPanel operatePanel;
     private GamePanel gamePanel;
     private JButton start, stop, addAbsorb, end, addFlipper, addTriangle, addRectangle, addCircle, addBall;
@@ -16,7 +16,7 @@ public class PlayRoom extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                PlayRoom mainFrame = new PlayRoom();
+                playRoom = new PlayRoom();
             }
         });
     }
@@ -31,7 +31,6 @@ public class PlayRoom extends JFrame {
     }
 
     public void startGame() {
-        gameState = true;
         start.setEnabled(false);
         stop.setEnabled(true);
         setEditMode(false);
@@ -39,7 +38,6 @@ public class PlayRoom extends JFrame {
     }
 
     public void endGame() {
-        gameState = false;
         start.setEnabled(true);
         stop.setEnabled(false);
         setEditMode(true);

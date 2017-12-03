@@ -100,7 +100,7 @@ public class GamePanel extends JPanel {
         }
         try {
             tempBall = ball.clone();
-            tempBall.setConstantAcceleration(new Vector(0, 70));
+            tempBall.setConstantAcceleration(new Vector(0, 200));
             tempBall.setVelocity(new Vector(0, 0));
             motionInterfaces.add(tempBall);
             for (Geometry geometry : obstacles) {
@@ -138,6 +138,7 @@ public class GamePanel extends JPanel {
         removeKeyListener(eventListener);
         timer.stop();
         update();
+        addReEditListener();
     }
 
     private void update() {
@@ -199,7 +200,7 @@ public class GamePanel extends JPanel {
         }
 
         public void keyPressed(KeyEvent e) {
-            //
+            e.isConsumed();
             int keynum = e.getKeyCode();
 
             if ((keynum >= 65) && (keynum <= 74)) {
@@ -460,7 +461,14 @@ public class GamePanel extends JPanel {
         public void mouseWheelMoved(MouseWheelEvent e) {
             System.out.println("滚动了" + e.getScrollAmount());
             if (target != null) {
-                target.zoom(e.getScrollAmount() * 1.1);
+                switch (e.getWheelRotation()){
+                    case -1:
+                        target.zoom(e.getScrollAmount() * 1.1);
+                        break;
+                    case 1:
+                        target.zoom(e.getScrollAmount() * 0.9);
+                        break;
+                }
             }
         }
 
