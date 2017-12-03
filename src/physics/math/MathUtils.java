@@ -48,6 +48,7 @@ public class MathUtils {
     }
 
     public static void rotatePoint(PointGeometry p, PointGeometry center, double angle) {
+        angle = angle / 180.0 * Math.PI;
         double tmpx = p.getX();
         double tmpy = p.getY();
         p.setX((tmpx - center.getX()) * Math.cos(angle) - (tmpy - center.getY()) * Math.sin(angle) + center.getX());

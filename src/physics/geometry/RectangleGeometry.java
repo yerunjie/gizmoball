@@ -16,7 +16,6 @@ import java.util.List;
 import static gizmo.Constant.acceleration;
 
 @Data
-
 public class RectangleGeometry extends TwoPointGeometry implements PrintInterface, OperateInterface, MotionInterface, CollisionInterface {
     protected double width;
     protected double height;
@@ -199,28 +198,28 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
         if (MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry( //top
                 pointGeometries.get(0), pointGeometries.get(1))).getDistance() <= ball.r) {
             Vector pro = LineGeometry.lineCollisionProcess(
-                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point1, pointGeometries.get(1))).getCollisionPoint(),
+                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(pointGeometries.get(0), pointGeometries.get(1))).getCollisionPoint(),
                     ball, pointGeometries.get(0), pointGeometries.get(1), scalar);
             setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;
         } else if (MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry( //top
                 pointGeometries.get(0), pointGeometries.get(3))).getDistance() <= ball.r) {
             Vector pro = LineGeometry.lineCollisionProcess(
-                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point1, pointGeometries.get(3))).getCollisionPoint(),
+                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(pointGeometries.get(0), pointGeometries.get(3))).getCollisionPoint(),
                     ball, pointGeometries.get(0), pointGeometries.get(3), scalar);
             setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;
         } else if (MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry( //top
-                point2, pointGeometries.get(3))).getDistance() <= ball.r) {
+                pointGeometries.get(2), pointGeometries.get(3))).getDistance() <= ball.r) {
             Vector pro = LineGeometry.lineCollisionProcess(
-                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point2, pointGeometries.get(3))).getCollisionPoint(),
+                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(pointGeometries.get(2), pointGeometries.get(3))).getCollisionPoint(),
                     ball, pointGeometries.get(2), pointGeometries.get(3), scalar);
             setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;
         } else if (MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry( //top
                 pointGeometries.get(2), pointGeometries.get(1))).getDistance() <= ball.r) {
             Vector pro = LineGeometry.lineCollisionProcess(
-                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point2, pointGeometries.get(1))).getCollisionPoint(),
+                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(pointGeometries.get(2), pointGeometries.get(1))).getCollisionPoint(),
                     ball, pointGeometries.get(2), pointGeometries.get(1), scalar);
             setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;

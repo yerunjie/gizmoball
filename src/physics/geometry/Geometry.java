@@ -98,7 +98,7 @@ public abstract class Geometry implements Cloneable {
                     return false;
                 } else {
                     for (PointGeometry pointGeometry : pointGeometries) {
-                        if (MathUtils.calculatePointToLineDistance(pointGeometry, (SegmentGeometry) obstacle).getDistance() < 2) {
+                        if (MathUtils.calculatePointToLineDistance(pointGeometry, (SegmentGeometry) obstacle).getDistance() < (this instanceof Flipper ? 2 : 2)) {
                             stop(obstacle);
                             return true;
                         }

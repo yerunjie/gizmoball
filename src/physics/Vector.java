@@ -2,6 +2,7 @@ package physics;
 
 import lombok.Data;
 import physics.geometry.LineGeometry;
+import physics.geometry.PointGeometry;
 
 @Data
 public class Vector implements Cloneable {
@@ -12,6 +13,27 @@ public class Vector implements Cloneable {
     public Vector(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Vector(PointGeometry p1, PointGeometry p2) {
+        this.x = p2.getX() - p1.getX();
+        this.y = p2.getY() - p1.getY();
+    }
+
+    public Vector(Vector another) {
+        x = another.x;
+        y = another.y;
+    }
+
+    public Vector(Vector another, double norm) {
+        if (norm != 0 && another.getNorm() != 0) {
+            double r = norm / another.getNorm();
+            x = another.x * r;
+            y = another.y * r;
+        } else {
+            x = 0;
+            y = 0;
+        }
     }
 
     @Override
@@ -67,22 +89,6 @@ public class Vector implements Cloneable {
         x *= s;
         y *= s;
         return this;
-    }
-
-    public Vector(Vector another) {
-        x = another.x;
-        y = another.y;
-    }
-
-    public Vector(Vector another, double norm) {
-        if (norm != 0 && another.getNorm() != 0) {
-            double r = norm / another.getNorm();
-            x = another.x * r;
-            y = another.y * r;
-        } else {
-            x = 0;
-            y = 0;
-        }
     }
 
     public double dotProduct(Vector v1, Vector v2) {

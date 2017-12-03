@@ -31,6 +31,7 @@ public abstract class TwoPointGeometry extends Geometry {
         return newObject;
     }
 
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("TwoPointGeometry[\n");

@@ -1,9 +1,14 @@
 package physics.geometry;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import physics.Vector;
 import physics.interfaces.FlipperOperateInterface;
 
+import static gizmo.GamePanel.segmentGeometries;
+
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class Flipper extends RectangleGeometry implements FlipperOperateInterface {
     protected boolean isMoving;
 
@@ -14,11 +19,23 @@ public class Flipper extends RectangleGeometry implements FlipperOperateInterfac
     @Override
     public void moveFlipper(double dx, double dy) {
         move(dx, dy);
+        for (SegmentGeometry segmentGeometry : segmentGeometries) {
+            if (segmentGeometry.onCollisionObstacle(this)) {
+                move(-dx, -dy);
+                return;
+            }
+        }
     }
 
     @Override
     public void rotateFlipper(double angle) {
         rotate(angle);
+        for (SegmentGeometry segmentGeometry : segmentGeometries) {
+            if (onCollisionObstacle(segmentGeometry)) {
+                rotate(-angle);
+                return;
+            }
+        }
     }
 
     @Override
@@ -37,7 +54,11 @@ public class Flipper extends RectangleGeometry implements FlipperOperateInterfac
 
     @Override
     public boolean onCollision(CircleGeometry ball) {
-        return onCollision(ball, isMoving ? 3 : 2);
+        if (onCollision(ball, isMoving ? 2 : 2)) {
+            setVelocity(new Vector(Vector.ZERO));
+            return true;
+        }
+        return false;
     }
 
 }

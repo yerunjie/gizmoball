@@ -20,6 +20,12 @@ import java.util.Map;
 public class GamePanel extends JPanel {
     public static int FRAMES_PER_SECOND = 100;
     private static int INDEX_BLOCK_NUMBER = 20;
+    public static List<SegmentGeometry> segmentGeometries = Lists.newArrayList(
+            new SegmentGeometry(new PointGeometry(10, 10), new PointGeometry(10, 650), false),
+            new SegmentGeometry(new PointGeometry(10, 650), new PointGeometry(690, 650), true),
+            new SegmentGeometry(new PointGeometry(690, 650), new PointGeometry(690, 10), false),
+            new SegmentGeometry(new PointGeometry(690, 10), new PointGeometry(10, 10), true)
+    );
     private PlayRoom playRoom;
     private Timer timer;
     private Geometry obstacle;
@@ -112,10 +118,7 @@ public class GamePanel extends JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        collisionInterfaces.add(new SegmentGeometry(new PointGeometry(10, 10), new PointGeometry(10, 650), false));
-        collisionInterfaces.add(new SegmentGeometry(new PointGeometry(10, 650), new PointGeometry(690, 650), true));
-        collisionInterfaces.add(new SegmentGeometry(new PointGeometry(690, 650), new PointGeometry(690, 10), false));
-        collisionInterfaces.add(new SegmentGeometry(new PointGeometry(690, 10), new PointGeometry(10, 10), true));
+        collisionInterfaces.addAll(segmentGeometries);
         status = 2;
         if (reEditEventListener != null) {
             removeReEditListener();
@@ -153,8 +156,8 @@ public class GamePanel extends JPanel {
         for (int i = 0; i < collisionInterfaces.size() - 1; i++) {
             for (int j = i + 1; j < collisionInterfaces.size(); j++) {
                 if (collisionInterfaces.get(i).onCollisionObstacle(collisionInterfaces.get(j))) {
-                    System.out.println(collisionInterfaces.get(i));
-                    System.out.println(collisionInterfaces.get(j));
+                    //System.out.println(collisionInterfaces.get(i));
+                    //System.out.println(collisionInterfaces.get(j));
                 }
             }
         }
@@ -213,22 +216,49 @@ public class GamePanel extends JPanel {
         }
 
         public void keyPressed(KeyEvent e) {
-            e.isConsumed();
-            int keynum = e.getKeyCode();
-
-            if ((keynum >= 65) && (keynum <= 74)) {
-                System.out.println("keypress " + e.getKeyCode());
-
+            int keyCode = e.getKeyCode();
+            System.out.println(keyCode);
+            switch (keyCode) {
+                case 37://方向键左
+                    setFlippers(new Vector(-1, 0));
+                    break;
+                case 38://方向键上
+                    setFlippers(new Vector(0, -1));
+                    break;
+                case 39://方向键右
+                    setFlippers(new Vector(1, 0));
+                    break;
+                case 40://方向键下
+                    setFlippers(new Vector(0, 1));
+                    break;
+                case 90://Z
+                    for (Flipper flipper : flippers) {
+                        flipper.rotateFlipper(-1);
+                    }
+                    break;
+                case 88://X
+                    for (Flipper flipper : flippers) {
+                        flipper.rotateFlipper(1);
+                    }
+                    break;
             }
         }
 
         public void keyReleased(KeyEvent e) {
-
+            for (Flipper flipper : flippers) {
+                flipper.setVelocity(new Vector(Vector.ZERO));
+            }
         }
 
 
         public void keyTyped(KeyEvent e) {
 
+        }
+
+        public void setFlippers(Vector acceleration) {
+            for (Flipper flipper : flippers) {
+                flipper.setInstantaneousAcceleration(acceleration);
+            }
         }
 
 
@@ -336,7 +366,7 @@ public class GamePanel extends JPanel {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            System.out.println("draggingTwo" + e.getSource());
+            //System.out.println("draggingTwo" + e.getSource());
             if (pointGeometries.size() == 1) {
                 pointGeometries.add(new PointGeometry(e.getPoint()));
             } else {
@@ -395,13 +425,12 @@ public class GamePanel extends JPanel {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            System.out.println("draggingPoly" + e.getSource());
+            //System.out.println("draggingPoly" + e.getSource());
             while (pointGeometries.size() > currentCount) {
                 pointGeometries.remove(currentCount);
             }
             pointGeometries.add(new PointGeometry(e.getPoint()));
             obstacle.reset(pointGeometries);
-
         }
 
         @Override
@@ -427,10 +456,10 @@ public class GamePanel extends JPanel {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            System.out.println("press" + e.getX());
-            if (target != null) {
+            //System.out.println("press" + e.getX());
+            /*if (target != null) {
 
-            }
+            }*/
             target = null;
             PointGeometry point = new PointGeometry(e.getX(), e.getY());
             if (ball != null && ball.isInside(point)) {
@@ -450,19 +479,21 @@ public class GamePanel extends JPanel {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-
-            System.out.println("release " + e.getX());
+            startPoint = null;
+            //System.out.println("release " + e.getX());
         }
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            System.out.println(obstacles.size());
-            PointGeometry point = new PointGeometry(e.getX(), e.getY());
-            System.out.println("drag from " + startPoint.getX() + " to " + point.getX());
-            target.move(point.getX() - startPoint.getX(), point.getY() - startPoint.getY());
-            startPoint.setX(point.getX());
-            startPoint.setY(point.getY());
-            //update();
+            if (startPoint != null) {
+                //System.out.println(obstacles.size());
+                PointGeometry point = new PointGeometry(e.getX(), e.getY());
+                //System.out.println("drag from " + startPoint.getX() + " to " + point.getX());
+                target.move(point.getX() - startPoint.getX(), point.getY() - startPoint.getY());
+                startPoint.setX(point.getX());
+                startPoint.setY(point.getY());
+                //update();
+            }
         }
 
         @Override
@@ -472,7 +503,7 @@ public class GamePanel extends JPanel {
 
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
-            System.out.println("滚动了" + e.getScrollAmount());
+            //System.out.println("滚动了" + e.getScrollAmount());
             if (target != null) {
                 switch (e.getWheelRotation()) {
                     case -1:
