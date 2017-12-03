@@ -9,8 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static gizmo.Constant.APPROXIMATE_DISTANCE;
+
 public class MathUtils {
-    public static final double APPROXIMATE_DISTANCE = 5;
 
     public static double distanceBetweenTwoPoints(PointGeometry p1, PointGeometry p2) {
         double dx2 = Math.pow(p1.getX() - p2.getX(), 2);
@@ -75,7 +76,7 @@ public class MathUtils {
         boolean oddNodes = false;
         double[] xpoints = pointGeometries.stream().mapToDouble(PointGeometry::getX).toArray();
         double[] ypoints = pointGeometries.stream().mapToDouble(PointGeometry::getY).toArray();
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < pointGeometries.size(); i++) {
             if ((ypoints[i] < pointGeometry.getY() && ypoints[j] >= pointGeometry.getY()
                     || ypoints[j] < pointGeometry.getY() && ypoints[i] >= pointGeometry.getY())
                     && (xpoints[i] <= pointGeometry.getX() || xpoints[j] <= pointGeometry.getX())) {

@@ -12,12 +12,9 @@ import physics.math.PointToLine;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
-import java.util.IntSummaryStatistics;
 import java.util.List;
 
 import static gizmo.Constant.acceleration;
-import static gizmo.Constant.centerPointRadius;
 
 @Data
 
@@ -44,10 +41,10 @@ public class TriangleGeometry extends Geometry implements PrintInterface, Operat
         ypoints[0] = (int) point1.y;
         ypoints[1] = (int) point2.y;
         ypoints[2] = (int) point3.y;
-        temp = new ArrayList<>();
-        temp.add(this.point1);
-        temp.add(this.point2);
-        temp.add(this.point3);
+        pointGeometries = new ArrayList<>();
+        pointGeometries.add(this.point1);
+        pointGeometries.add(this.point2);
+        pointGeometries.add(this.point3);
     }
 
     @Override
@@ -58,7 +55,7 @@ public class TriangleGeometry extends Geometry implements PrintInterface, Operat
         point2.y += dy;
         point3.x += dx;
         point3.y += dy;
-//        List<PointGeometry> tmp = getTemp();
+//        List<PointGeometry> tmp = getPointGeometries();
 //        for (PointGeometry p : tmp) {
 //            p.x += dx;
 //            p.y += dy;
@@ -77,7 +74,7 @@ public class TriangleGeometry extends Geometry implements PrintInterface, Operat
         MathUtils.rotatePoint(point1, center, angle);
         MathUtils.rotatePoint(point2, center, angle);
         MathUtils.rotatePoint(point3, center, angle);
-        for (PointGeometry p : temp) {
+        for (PointGeometry p : pointGeometries) {
             MathUtils.rotatePoint(p, center, angle);
         }
     }
@@ -92,7 +89,7 @@ public class TriangleGeometry extends Geometry implements PrintInterface, Operat
         point3.x = (point3.x - center.x) * ratio + center.x;
         point3.y = (point3.y - center.y) * ratio + center.y;
         reset();
-//        for (PointGeometry p : temp) {
+//        for (PointGeometry p : pointGeometries) {
 //            p.x += (p.x-center.x)*ratio + center.x;
 //            p.y += (p.y-center.y)*ratio + center.y;
 //        }
@@ -130,7 +127,7 @@ public class TriangleGeometry extends Geometry implements PrintInterface, Operat
     @Override
     public void reset(List<PointGeometry> pointGeometries) {
         if (pointGeometries.size() != 3) {
-            temp = pointGeometries;
+            this.pointGeometries = pointGeometries;
             return;
         }
         point1 = pointGeometries.get(0);
@@ -142,11 +139,11 @@ public class TriangleGeometry extends Geometry implements PrintInterface, Operat
     @Override
     public void drawing(Color color, Graphics g) {
         g.setColor(color);
-        for (int i = 0; i < temp.size() - 1; i++) {
-            g.drawLine((int) temp.get(i).x,
-                    (int) temp.get(i).y,
-                    (int) temp.get(i + 1).x,
-                    (int) temp.get(i + 1).y);
+        for (int i = 0; i < pointGeometries.size() - 1; i++) {
+            g.drawLine((int) pointGeometries.get(i).x,
+                    (int) pointGeometries.get(i).y,
+                    (int) pointGeometries.get(i + 1).x,
+                    (int) pointGeometries.get(i + 1).y);
         }
     }
 
@@ -191,12 +188,10 @@ public class TriangleGeometry extends Geometry implements PrintInterface, Operat
         point3.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
         point3.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
         reset();
-        for (PointGeometry p : temp) {
+        for (PointGeometry p : pointGeometries) {
             p.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
             p.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
         }
-        velocity.plus(new Vector(constantAcceleration).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
-        velocity.plus(new Vector(velocity).negate().setNorm(frictionCoefficient).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
     }
 
     @Override

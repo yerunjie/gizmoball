@@ -160,7 +160,7 @@ public class PlayRoom extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == addBall) {
                     setEditMode(false);
-                    gamePanel.addBall(new CircleGeometry(PointGeometry.origin, PointGeometry.origin));
+                    gamePanel.addBall(new Ball(PointGeometry.origin, PointGeometry.origin));
                 }
             }
         });

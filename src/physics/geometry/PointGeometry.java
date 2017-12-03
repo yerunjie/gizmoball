@@ -40,6 +40,11 @@ public class PointGeometry extends Geometry {
     }
 
     @Override
+    public boolean onCollision(CircleGeometry ball) {
+        return false;
+    }
+
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("PointGeometry[\n");
         sb.append("super:").append(super.toString());

@@ -87,11 +87,6 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
         super.update();
         center.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
         center.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
-        if (constantAcceleration.equals(ZERO)) {
-            velocity.plus(new Vector(velocity).negate().setNorm(frictionCoefficient).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
-        } else {
-            velocity.plus(new Vector(constantAcceleration).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
-        }
     }
 
     @Override

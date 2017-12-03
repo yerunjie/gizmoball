@@ -1,6 +1,7 @@
 package physics.interfaces;
 
 import physics.Vector;
+import physics.geometry.Geometry;
 import physics.geometry.PointGeometry;
 
 public interface MotionInterface extends PrintInterface {
@@ -9,6 +10,18 @@ public interface MotionInterface extends PrintInterface {
      * update单位时间的位置
      */
     void update();
+
+    default void reUpdate() {
+        Geometry geometry = (Geometry) this;
+        geometry.setVelocity(geometry.getVelocity().negate());
+        update();
+        geometry.setVelocity(geometry.getVelocity().negate());
+    }
+
+    /**
+     * update单位时间的速度
+     */
+    void updateVelocity();
 
     /**
      * 旋转速度

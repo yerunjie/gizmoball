@@ -39,6 +39,11 @@ public class LineGeometry extends TwoPointGeometry {
     }*/
 
     @Override
+    public boolean onCollision(CircleGeometry ball) {
+        return false;
+    }
+
+    @Override
     public PointGeometry getCenter() {
         return null;
     }

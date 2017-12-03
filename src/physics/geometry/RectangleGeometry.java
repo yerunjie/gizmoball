@@ -12,10 +12,8 @@ import physics.math.MathUtils;
 
 import java.awt.*;
 import java.util.List;
-import java.util.Map;
 
 import static gizmo.Constant.acceleration;
-import static gizmo.Constant.centerPointRadius;
 
 @Data
 
@@ -41,7 +39,7 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
             super.reset(pointGeometries);
             reset();
         } else if (pointGeometries.size() == 4) {
-            temp = pointGeometries;
+            this.pointGeometries = pointGeometries;
         } else {
             throw new IllegalArgumentException();
         }
@@ -52,11 +50,11 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
         PointGeometry point2 = this.point2;
         this.point1 = new PointGeometry(point1.x < point2.x ? point1.x : point2.x, point1.y < point2.y ? point1.y : point2.y);
         this.point2 = new PointGeometry(point1.x > point2.x ? point1.x : point2.x, point1.y > point2.y ? point1.y : point2.y);
-        temp = Lists.newArrayList();
-        temp.add(point1);
-        temp.add(new PointGeometry(point1.x > point2.x ? point1.x : point2.x, point1.y < point2.y ? point1.y : point2.y));
-        temp.add(point2);
-        temp.add(new PointGeometry(point1.x < point2.x ? point1.x : point2.x, point1.y > point2.y ? point1.y : point2.y));
+        pointGeometries = Lists.newArrayList();
+        pointGeometries.add(point1);
+        pointGeometries.add(new PointGeometry(point1.x > point2.x ? point1.x : point2.x, point1.y < point2.y ? point1.y : point2.y));
+        pointGeometries.add(point2);
+        pointGeometries.add(new PointGeometry(point1.x < point2.x ? point1.x : point2.x, point1.y > point2.y ? point1.y : point2.y));
         resetWidthAndHeight();
     }
 
@@ -68,7 +66,7 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
         point2.y += dy;
         reset();
         //reset会设置
-//        List<PointGeometry> tmp = getTemp();
+//        List<PointGeometry> tmp = getPointGeometries();
 //        for (PointGeometry p : tmp) {
 //            p.x += dx;
 //            p.y += dy;
@@ -83,45 +81,45 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
     @Override
     public void rotate(double angle) {
         PointGeometry center = getCenter();
-        for (PointGeometry p : temp) {
+        for (PointGeometry p : pointGeometries) {
             MathUtils.rotatePoint(p, center, angle);
         }
     }
 
     @Override
     public void zoom(double ratio) {
-        PointGeometry center = new PointGeometry((temp.get(0).getX() + temp.get(2).getX()) / 2,
-                (temp.get(0).getY() + temp.get(2).getY()) / 2);
+        PointGeometry center = new PointGeometry((pointGeometries.get(0).getX() + pointGeometries.get(2).getX()) / 2,
+                (pointGeometries.get(0).getY() + pointGeometries.get(2).getY()) / 2);
         point1.x = (point1.x - center.x) * ratio + center.x;
         point1.y = (point1.y - center.y) * ratio + center.y;
         point2.x = (point2.x - center.x) * ratio + center.x;
         point2.y = (point2.y - center.y) * ratio + center.y;
-//        for (PointGeometry p : temp) {
+//        for (PointGeometry p : pointGeometries) {
 //            p.x += (p.x-center.x)*ratio + center.x;
 //            p.y += (p.y-center.y)*ratio + center.y;
 //        }
-//        width = temp.get(3).x - temp.get(0).x;
-//        height = temp.get(3).y - temp.get(0).y;
-//        width = Math.sqrt(Math.pow(temp.get(1).x - temp.get(0).x, 2) + Math.pow(temp.get(1).y - temp.get(0).y, 2));
-//        height = Math.sqrt(Math.pow(temp.get(0).x - temp.get(2).x, 2) + Math.pow(temp.get(0).y - temp.get(2).y, 2));
+//        width = pointGeometries.get(3).x - pointGeometries.get(0).x;
+//        height = pointGeometries.get(3).y - pointGeometries.get(0).y;
+//        width = Math.sqrt(Math.pow(pointGeometries.get(1).x - pointGeometries.get(0).x, 2) + Math.pow(pointGeometries.get(1).y - pointGeometries.get(0).y, 2));
+//        height = Math.sqrt(Math.pow(pointGeometries.get(0).x - pointGeometries.get(2).x, 2) + Math.pow(pointGeometries.get(0).y - pointGeometries.get(2).y, 2));
         reset();
     }
 
     @Override
     public boolean isInside(PointGeometry pointGeometry) {
-        return MathUtils.isInside(temp, pointGeometry);
+        return MathUtils.isInside(pointGeometries, pointGeometry);
     }
 
     public PointGeometry getCenter() {
-        return new PointGeometry((temp.get(0).getX() + temp.get(2).getX()) / 2,
-                (temp.get(0).getY() + temp.get(2).getY()) / 2);
+        return new PointGeometry((pointGeometries.get(0).getX() + pointGeometries.get(2).getX()) / 2,
+                (pointGeometries.get(0).getY() + pointGeometries.get(2).getY()) / 2);
     }
 
     @Override
     public void print(Color color, Graphics g) {
         g.setColor(color);
-        g.drawPolygon(temp.stream().mapToInt(point -> (int) point.x).toArray(),
-                temp.stream().mapToInt(point -> (int) point.y).toArray(), temp.size());
+        g.drawPolygon(pointGeometries.stream().mapToInt(point -> (int) point.x).toArray(),
+                pointGeometries.stream().mapToInt(point -> (int) point.y).toArray(), pointGeometries.size());
     }
 
     @Override
@@ -152,12 +150,17 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
         point1.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
         point2.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
         point2.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
-        for (PointGeometry p : temp) {
+        for (PointGeometry p : pointGeometries) {
             p.x += velocity.getX() / GamePanel.FRAMES_PER_SECOND;
             p.y += velocity.getY() / GamePanel.FRAMES_PER_SECOND;
         }
-        velocity.plus(new Vector(constantAcceleration).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
-        velocity.plus(new Vector(velocity).negate().setNorm(frictionCoefficient).multiplyScalar(1.0 / GamePanel.FRAMES_PER_SECOND));
+    }
+
+    @Override
+    public void reUpdate() {
+        velocity = velocity.negate();
+        update();
+        velocity = velocity.negate();
     }
 
     @Override
@@ -194,31 +197,31 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
 
     public boolean onCollision(CircleGeometry ball, int scalar) {
         if (MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry( //top
-                temp.get(0), temp.get(1))).getDistance() <= ball.r) {
+                pointGeometries.get(0), pointGeometries.get(1))).getDistance() <= ball.r) {
             Vector pro = LineGeometry.lineCollisionProcess(
-                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point1, temp.get(1))).getCollisionPoint(),
-                    ball, temp.get(0), temp.get(1), scalar);
+                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point1, pointGeometries.get(1))).getCollisionPoint(),
+                    ball, pointGeometries.get(0), pointGeometries.get(1), scalar);
             setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;
         } else if (MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry( //top
-                temp.get(0), temp.get(3))).getDistance() <= ball.r) {
+                pointGeometries.get(0), pointGeometries.get(3))).getDistance() <= ball.r) {
             Vector pro = LineGeometry.lineCollisionProcess(
-                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point1, temp.get(3))).getCollisionPoint(),
-                    ball, temp.get(0), temp.get(3), scalar);
+                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point1, pointGeometries.get(3))).getCollisionPoint(),
+                    ball, pointGeometries.get(0), pointGeometries.get(3), scalar);
             setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;
         } else if (MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry( //top
-                point2, temp.get(3))).getDistance() <= ball.r) {
+                point2, pointGeometries.get(3))).getDistance() <= ball.r) {
             Vector pro = LineGeometry.lineCollisionProcess(
-                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point2, temp.get(3))).getCollisionPoint(),
-                    ball, temp.get(2), temp.get(3), scalar);
+                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point2, pointGeometries.get(3))).getCollisionPoint(),
+                    ball, pointGeometries.get(2), pointGeometries.get(3), scalar);
             setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;
         } else if (MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry( //top
-                temp.get(2), temp.get(1))).getDistance() <= ball.r) {
+                pointGeometries.get(2), pointGeometries.get(1))).getDistance() <= ball.r) {
             Vector pro = LineGeometry.lineCollisionProcess(
-                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point2, temp.get(1))).getCollisionPoint(),
-                    ball, temp.get(2), temp.get(1), scalar);
+                    MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(point2, pointGeometries.get(1))).getCollisionPoint(),
+                    ball, pointGeometries.get(2), pointGeometries.get(1), scalar);
             setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;
         }

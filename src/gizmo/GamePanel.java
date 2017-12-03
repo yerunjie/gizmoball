@@ -23,8 +23,8 @@ public class GamePanel extends JPanel {
     private PlayRoom playRoom;
     private Timer timer;
     private Geometry obstacle;
-    protected OperateInterface target = null;
-    private CircleGeometry ball, tempBall;
+    private OperateInterface target = null;
+    private Ball ball, tempBall;
     private List<Geometry> obstacles;
     private List<Flipper> flippers;
     private List<MotionInterface> motionInterfaces;
@@ -42,8 +42,10 @@ public class GamePanel extends JPanel {
         this.setBackground(Color.WHITE);
 
         obstacles = Lists.newArrayList();
-
-     //   obstacleIndex = Maps.newHashMap();
+        flippers = Lists.newArrayList();
+        motionInterfaces = Lists.newArrayList();
+        collisionInterfaces = Lists.newArrayList();
+        //   obstacleIndex = Maps.newHashMap();
 //        for (int i = 0; i < INDEX_BLOCK_NUMBER; i++) {
 //            for (int j = 0; j < INDEX_BLOCK_NUMBER; j++) {
 //                Pair<Integer, Integer> pair = new Pair<>(i, j);
@@ -64,7 +66,7 @@ public class GamePanel extends JPanel {
         timer.start();
     }
 
-    public void addBall(CircleGeometry ball) {
+    public void addBall(Ball ball) {
         this.ball = ball;
         if (reEditEventListener != null) {
             removeReEditListener();
@@ -87,14 +89,6 @@ public class GamePanel extends JPanel {
     }
 
     public void startGame() {
-        flippers = Lists.newArrayList();
-        motionInterfaces = Lists.newArrayList();
-        collisionInterfaces = Lists.newArrayList();
-        obstacles.add(new SegmentGeometry(new PointGeometry(10,10),new PointGeometry(10,650),false));
-        obstacles.add(new SegmentGeometry(new PointGeometry(10,650),new PointGeometry(690,650),true));
-        obstacles.add(new SegmentGeometry(new PointGeometry(690,650),new PointGeometry(690,10),false));
-        obstacles.add(new SegmentGeometry(new PointGeometry(690,10),new PointGeometry(10,10),true));
-
         if (ball == null) {
             throw new RuntimeException("ball has not place");
         }
@@ -104,7 +98,7 @@ public class GamePanel extends JPanel {
             tempBall.setVelocity(new Vector(0, 0));
             motionInterfaces.add(tempBall);
             for (Geometry geometry : obstacles) {
-                Geometry clone = (Geometry)geometry.clone();
+                Geometry clone = (Geometry) geometry.clone();
                 if (clone instanceof Flipper) {
                     flippers.add((Flipper) clone);
                 }
@@ -118,6 +112,10 @@ public class GamePanel extends JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        collisionInterfaces.add(new SegmentGeometry(new PointGeometry(10, 10), new PointGeometry(10, 650), false));
+        collisionInterfaces.add(new SegmentGeometry(new PointGeometry(10, 650), new PointGeometry(690, 650), true));
+        collisionInterfaces.add(new SegmentGeometry(new PointGeometry(690, 650), new PointGeometry(690, 10), false));
+        collisionInterfaces.add(new SegmentGeometry(new PointGeometry(690, 10), new PointGeometry(10, 10), true));
         status = 2;
         if (reEditEventListener != null) {
             removeReEditListener();
@@ -132,6 +130,9 @@ public class GamePanel extends JPanel {
     }
 
     public void endGame() {
+        flippers = Lists.newArrayList();
+        motionInterfaces = Lists.newArrayList();
+        collisionInterfaces = Lists.newArrayList();
         status = 1;
         removeMouseListener(eventListener);
         removeMouseMotionListener(eventListener);
@@ -142,12 +143,28 @@ public class GamePanel extends JPanel {
     }
 
     private void update() {
+        for (MotionInterface motionInterface : motionInterfaces) {
+            motionInterface.update();
+            motionInterface.updateVelocity();
+        }
+        for (CollisionInterface collisionInterface : collisionInterfaces) {
+            collisionInterface.onCollision(tempBall);
+        }
+        for (int i = 0; i < collisionInterfaces.size() - 1; i++) {
+            for (int j = i + 1; j < collisionInterfaces.size(); j++) {
+                if (collisionInterfaces.get(i).onCollisionObstacle(collisionInterfaces.get(j))) {
+                    System.out.println(collisionInterfaces.get(i));
+                    System.out.println(collisionInterfaces.get(j));
+                }
+            }
+        }
         repaint();
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.drawRect(10, 10, 680, 640);
         switch (status) {
             case 1:
                 for (Geometry geometry : obstacles) {
@@ -174,11 +191,7 @@ public class GamePanel extends JPanel {
                 break;
             case 2:
                 for (MotionInterface motionInterface : motionInterfaces) {
-                    motionInterface.update();
                     motionInterface.print(Color.BLACK, g);
-                }
-                for (CollisionInterface collisionInterface : collisionInterfaces) {
-                    collisionInterface.onCollision(tempBall);
                 }
                 break;
         }
@@ -461,7 +474,7 @@ public class GamePanel extends JPanel {
         public void mouseWheelMoved(MouseWheelEvent e) {
             System.out.println("滚动了" + e.getScrollAmount());
             if (target != null) {
-                switch (e.getWheelRotation()){
+                switch (e.getWheelRotation()) {
                     case -1:
                         target.zoom(e.getScrollAmount() * 1.1);
                         break;
