@@ -11,7 +11,7 @@ public class PlayRoom extends JFrame {
     public static PlayRoom playRoom;
     private JPanel operatePanel;
     private GamePanel gamePanel;
-    private JButton start, stop, addAbsorb, end, addFlipper, addTriangle, addRectangle, addCircle, addBall;
+    private JButton start, stop, addAbsorb, end, addFlipper, addTriangle, addRectangle, addCircle, addBall,addTrack;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -28,6 +28,7 @@ public class PlayRoom extends JFrame {
         addBall.setEnabled(mode);
         addCircle.setEnabled(mode);
         addRectangle.setEnabled(mode);
+        addTrack.setEnabled(mode);
     }
 
     public void startGame() {
@@ -165,6 +166,17 @@ public class PlayRoom extends JFrame {
             }
         });
 
+        addTrack = new JButton("添加轨道");
+        addTrack.setBounds(850, 500, 100, 30);
+        addTrack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == addTrack) {
+                    setEditMode(false);
+                    gamePanel.addObstacle(new Track());
+                }
+            }
+        });
 
         //将按钮添加到操作侧栏
         operatePanel.add(start);
@@ -176,6 +188,7 @@ public class PlayRoom extends JFrame {
         operatePanel.add(addRectangle);
         operatePanel.add(addCircle);
         operatePanel.add(addBall);
+        operatePanel.add(addTrack);
 
         //显示窗口
         this.setVisible(true);

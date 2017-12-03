@@ -26,15 +26,17 @@ public class GamePanel extends JPanel {
             new SegmentGeometry(new PointGeometry(690, 650), new PointGeometry(690, 10), false),
             new SegmentGeometry(new PointGeometry(690, 10), new PointGeometry(10, 10), true)
     );
+
     private PlayRoom playRoom;
     private Timer timer;
     private Geometry obstacle;
     private OperateInterface target = null;
-    private Ball ball, tempBall;
+    private static Ball ball, tempBall;
     private List<Geometry> obstacles;
     private List<Flipper> flippers;
     private List<MotionInterface> motionInterfaces;
     private List<CollisionInterface> collisionInterfaces;
+    private List<PrintInterface> printInterfaces;
     private AnimationEventListener eventListener;
     private ReEditEventListener reEditEventListener;
     private Map<Pair<Integer, Integer>, List<Geometry>> obstacleIndex;
@@ -51,6 +53,7 @@ public class GamePanel extends JPanel {
         flippers = Lists.newArrayList();
         motionInterfaces = Lists.newArrayList();
         collisionInterfaces = Lists.newArrayList();
+        printInterfaces = Lists.newArrayList();
         //   obstacleIndex = Maps.newHashMap();
 //        for (int i = 0; i < INDEX_BLOCK_NUMBER; i++) {
 //            for (int j = 0; j < INDEX_BLOCK_NUMBER; j++) {
@@ -100,9 +103,10 @@ public class GamePanel extends JPanel {
         }
         try {
             tempBall = ball.clone();
-            tempBall.setConstantAcceleration(new Vector(0, 200));
+            tempBall.setConstantAcceleration(new Vector(0, 5000));
             tempBall.setVelocity(new Vector(0, 0));
             motionInterfaces.add(tempBall);
+            printInterfaces.add(tempBall);
             for (Geometry geometry : obstacles) {
                 Geometry clone = (Geometry) geometry.clone();
                 if (clone instanceof Flipper) {
@@ -110,6 +114,9 @@ public class GamePanel extends JPanel {
                 }
                 if (clone instanceof MotionInterface) {
                     motionInterfaces.add((MotionInterface) clone);
+                }
+                if(clone instanceof PrintInterface){
+                    printInterfaces.add((PrintInterface)clone);
                 }
                 if (clone instanceof CollisionInterface) {
                     collisionInterfaces.add((CollisionInterface) clone);
@@ -136,6 +143,7 @@ public class GamePanel extends JPanel {
         flippers = Lists.newArrayList();
         motionInterfaces = Lists.newArrayList();
         collisionInterfaces = Lists.newArrayList();
+        printInterfaces = Lists.newArrayList();
         status = 1;
         removeMouseListener(eventListener);
         removeMouseMotionListener(eventListener);
@@ -150,8 +158,10 @@ public class GamePanel extends JPanel {
             motionInterface.update();
             motionInterface.updateVelocity();
         }
-        for (CollisionInterface collisionInterface : collisionInterfaces) {
-            collisionInterface.onCollision(tempBall);
+        if (collisionInterfaces.size() > 0 && tempBall.isCanCollision()) {
+            for (CollisionInterface collisionInterface : collisionInterfaces) {
+                collisionInterface.onCollision(tempBall);
+            }
         }
         for (int i = 0; i < collisionInterfaces.size() - 1; i++) {
             for (int j = i + 1; j < collisionInterfaces.size(); j++) {
@@ -193,8 +203,8 @@ public class GamePanel extends JPanel {
                 }
                 break;
             case 2:
-                for (MotionInterface motionInterface : motionInterfaces) {
-                    motionInterface.print(Color.BLACK, g);
+                for (PrintInterface printInterface : printInterfaces) {
+                    printInterface.print(Color.BLACK, g);
                 }
                 break;
         }
@@ -270,6 +280,8 @@ public class GamePanel extends JPanel {
     private EditEventListener getEditEventListener(Geometry newObstacle) {
         if (newObstacle instanceof TwoPointGeometry) {
             return new EditTwoPointEventListener();
+        } else if (newObstacle instanceof Track) {
+            return new EditPolygonLineEventListener();
         } else {
             return new EditPolygonEventListener(3);
         }
@@ -436,6 +448,41 @@ public class GamePanel extends JPanel {
         @Override
         public void mouseMoved(MouseEvent e) {
             mouseDragged(e);
+        }
+    }
+
+    class EditPolygonLineEventListener extends EditEventListener {
+
+        EditPolygonLineEventListener() {
+            pointGeometries = Lists.newArrayList();
+        }
+
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            pointGeometries.add(new PointGeometry(e.getPoint()));
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            pointGeometries.add(new PointGeometry(e.getPoint()));
+            end();
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            pointGeometries.add(new PointGeometry(e.getPoint()));
+            obstacle.reset(pointGeometries);
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+
         }
     }
 

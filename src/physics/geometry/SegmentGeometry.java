@@ -43,7 +43,6 @@ public class SegmentGeometry extends LineGeometry implements CollisionInterface 
 
     @Override
     public boolean onCollision(CircleGeometry ball) {
-
         if (MathUtils.calculatePointToLineDistance(ball.getCenter(), this).getDistance() <= ball.getR()) {
             if (this.topbottom == true) {
                 ball.setInstantaneousAcceleration(new Vector(0, -ball.getVelocity().getY() * 2));

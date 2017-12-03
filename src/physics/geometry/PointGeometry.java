@@ -1,6 +1,7 @@
 package physics.geometry;
 
 import lombok.Data;
+import physics.math.MathUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -30,8 +31,17 @@ public class PointGeometry extends Geometry {
         this.y = point.y;
     }
 
+    public PointGeometry(PointGeometry point) {
+        this.x = point.x;
+        this.y = point.y;
+    }
+
     public Point toPoint() {
         return new Point((int) x, (int) y);
+    }
+
+    public boolean isCloseTo(PointGeometry another) {
+        return Math.abs(x - another.x) < 0.001 && Math.abs(y - another.y) < 0.001;
     }
 
     @Override
@@ -46,13 +56,10 @@ public class PointGeometry extends Geometry {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("PointGeometry[\n");
-        sb.append("super:").append(super.toString());
-        sb.append("x:").append(x).append(";\n");
-        sb.append("y:").append(y).append(";\n");
-        sb.append("]\n");
-
-        return sb.toString();
+        return "PointGeometry{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
     }
 
     @Override
