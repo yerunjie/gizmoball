@@ -3,19 +3,22 @@ package physics.geometry;
 import com.google.common.collect.Lists;
 import gizmo.GamePanel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.OperateInterface;
 import physics.interfaces.PrintInterface;
 import physics.math.MathUtils;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 
 
 @Data
-public class Track extends Geometry implements PrintInterface, CollisionInterface, OperateInterface {
+@NoArgsConstructor
+public class Track extends Geometry implements PrintInterface, CollisionInterface, OperateInterface ,Serializable {
     private PointGeometry start;
     private PointGeometry end;
 

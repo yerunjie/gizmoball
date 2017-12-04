@@ -2,14 +2,18 @@ package physics.geometry;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import physics.interfaces.FlipperOperateInterface;
 import physics.math.Vector;
+
+import java.io.Serializable;
 
 import static gizmo.GamePanel.segmentGeometries;
 
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Flipper extends RectangleGeometry implements FlipperOperateInterface {
+public class Flipper extends RectangleGeometry implements FlipperOperateInterface, Serializable {
     protected boolean isMoving;
 
     public Flipper(PointGeometry point1, PointGeometry point2) {

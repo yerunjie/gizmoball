@@ -1,11 +1,14 @@
 package physics.geometry;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public abstract class TwoPointGeometry extends Geometry {
+@NoArgsConstructor
+public abstract class TwoPointGeometry extends Geometry implements Serializable{
     protected PointGeometry point1;
     protected PointGeometry point2;
 

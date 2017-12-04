@@ -2,6 +2,7 @@ package physics.geometry;
 
 import gizmo.GamePanel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
@@ -10,12 +11,14 @@ import physics.math.MathUtils;
 import physics.math.Vector;
 
 import java.awt.*;
+import java.io.Serializable;
 
 import static gizmo.Constant.acceleration;
 import static physics.math.MathUtils.distanceBetweenTwoPoints;
 
 @Data
-public class CircleGeometry extends RectangleGeometry implements PrintInterface, OperateInterface, MotionInterface, CollisionInterface {
+@NoArgsConstructor
+public class CircleGeometry extends RectangleGeometry implements PrintInterface, OperateInterface, MotionInterface, CollisionInterface ,Serializable {
     protected double r;
     protected PointGeometry center;
 

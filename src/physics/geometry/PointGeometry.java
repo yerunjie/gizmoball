@@ -1,12 +1,15 @@
 package physics.geometry;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class PointGeometry extends Geometry {
+@NoArgsConstructor
+public class PointGeometry extends Geometry implements Serializable {
     public static final PointGeometry origin = new PointGeometry(0, 0);
     protected double x;
     protected double y;

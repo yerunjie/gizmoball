@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class PlayRoom extends JFrame {
     public static PlayRoom playRoom;
@@ -13,38 +14,7 @@ public class PlayRoom extends JFrame {
     private GamePanel gamePanel;
     private JButton start, stop, addAbsorb, end, addFlipper, addTriangle, addRectangle, addCircle, addBall, addTrack, addQuadrilateral;
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                playRoom = new PlayRoom();
-            }
-        });
-    }
-
-    public void setEditMode(boolean mode) {
-        addAbsorb.setEnabled(mode);
-        addFlipper.setEnabled(mode);
-        addTriangle.setEnabled(mode);
-        addBall.setEnabled(mode);
-        addCircle.setEnabled(mode);
-        addRectangle.setEnabled(mode);
-        addTrack.setEnabled(mode);
-        addQuadrilateral.setEnabled(mode);
-    }
-
-    public void startGame() {
-        start.setEnabled(false);
-        stop.setEnabled(true);
-        setEditMode(false);
-        gamePanel.startGame();
-    }
-
-    public void endGame() {
-        start.setEnabled(true);
-        stop.setEnabled(false);
-        setEditMode(true);
-        gamePanel.endGame();
-    }
+    private JButton save, open;
 
     public PlayRoom() {
         this.setTitle("弹球测试样例");
@@ -191,6 +161,55 @@ public class PlayRoom extends JFrame {
             }
         });
 
+        open = new JButton("打开场景");
+        open.setBounds(850, 600, 100, 30);
+        open.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == open) {
+                    JFileChooser jfc = new JFileChooser();
+                    jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                    jfc.showDialog(new JLabel(), "选择");
+                    File file = jfc.getSelectedFile();
+                    gamePanel.openFromFile(file);
+                    System.out.println("文件:" + file.getAbsolutePath());
+
+                    System.out.println(jfc.getSelectedFile().getName());
+                }
+            }
+        });
+
+        save = new JButton("保存场景");
+        save.setBounds(850, 650, 100, 30);
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == save) {
+                    JFileChooser chooser = new JFileChooser();
+                    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                    chooser.setDialogTitle("另存为");
+                    int result = chooser.showSaveDialog(null);
+                    if (result == JFileChooser.APPROVE_OPTION) { // 确认打开
+                        File fileIn = chooser.getSelectedFile();
+                        if (fileIn.exists()) {
+                            JOptionPane.showMessageDialog(null, "文件已存在，请重新选择", "警告",
+                                    JOptionPane.WARNING_MESSAGE);
+                        } else {
+                            try {
+                                fileIn.createNewFile();
+                                gamePanel.save(fileIn);
+                            } catch (Exception ex) {
+                                JOptionPane.showMessageDialog(null, "保存文件出错。", "警告",
+                                        JOptionPane.WARNING_MESSAGE);
+                            }
+                        }
+                    } else if (result == JFileChooser.ERROR_OPTION) {
+                        JOptionPane.showMessageDialog(null, "选择文件出错。", "警告", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
+        });
+
         //将按钮添加到操作侧栏
         operatePanel.add(start);
         operatePanel.add(stop);
@@ -203,8 +222,45 @@ public class PlayRoom extends JFrame {
         operatePanel.add(addBall);
         operatePanel.add(addTrack);
         operatePanel.add(addQuadrilateral);
+        operatePanel.add(open);
+        operatePanel.add(save);
 
         //显示窗口
         this.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                playRoom = new PlayRoom();
+            }
+        });
+    }
+
+    public void setEditMode(boolean mode) {
+        addAbsorb.setEnabled(mode);
+        addFlipper.setEnabled(mode);
+        addTriangle.setEnabled(mode);
+        addBall.setEnabled(mode);
+        addCircle.setEnabled(mode);
+        addRectangle.setEnabled(mode);
+        addTrack.setEnabled(mode);
+        addQuadrilateral.setEnabled(mode);
+        save.setEnabled(mode);
+        open.setEnabled(mode);
+    }
+
+    public void startGame() {
+        start.setEnabled(false);
+        stop.setEnabled(true);
+        setEditMode(false);
+        gamePanel.startGame();
+    }
+
+    public void endGame() {
+        start.setEnabled(true);
+        stop.setEnabled(false);
+        setEditMode(true);
+        gamePanel.endGame();
     }
 }

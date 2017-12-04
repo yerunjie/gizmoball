@@ -2,14 +2,17 @@ package physics.geometry;
 
 import gizmo.GamePanel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import physics.math.Vector;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Queue;
 
 @Data
-public class Ball extends CircleGeometry {
+@NoArgsConstructor
+public class Ball extends CircleGeometry implements Serializable {
     private Queue<PointGeometry> trackQueue;
     private PointGeometry pointGeometry;
     private boolean canCollision;

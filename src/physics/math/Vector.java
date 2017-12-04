@@ -4,8 +4,10 @@ import lombok.Data;
 import physics.geometry.LineGeometry;
 import physics.geometry.PointGeometry;
 
+import java.io.Serializable;
+
 @Data
-public class Vector implements Cloneable {
+public class Vector implements Cloneable ,Serializable {
     public static final Vector ZERO = new Vector(0, 0);
     protected double x;
     protected double y;

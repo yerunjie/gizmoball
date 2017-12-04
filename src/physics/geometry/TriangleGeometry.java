@@ -2,6 +2,7 @@ package physics.geometry;
 
 import gizmo.GamePanel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
@@ -10,6 +11,7 @@ import physics.math.MathUtils;
 import physics.math.Vector;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +19,8 @@ import static gizmo.Constant.acceleration;
 import static physics.math.MathUtils.polygonCollisionProcess;
 
 @Data
-
-public class TriangleGeometry extends Geometry implements PrintInterface, OperateInterface, MotionInterface, CollisionInterface {
+@NoArgsConstructor
+public class TriangleGeometry extends Geometry implements PrintInterface, OperateInterface, MotionInterface, CollisionInterface ,Serializable {
     private PointGeometry point1;
     private PointGeometry point2;
     private PointGeometry point3;
@@ -72,6 +74,7 @@ public class TriangleGeometry extends Geometry implements PrintInterface, Operat
         for (PointGeometry p : pointGeometries) {
             MathUtils.rotatePoint(p, center, angle);
         }
+        reset();
     }
 
     @Override

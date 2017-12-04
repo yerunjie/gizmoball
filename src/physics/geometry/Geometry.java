@@ -4,12 +4,14 @@ import com.google.common.collect.Lists;
 import gizmo.Constant;
 import gizmo.GamePanel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.MotionInterface;
 import physics.math.MathUtils;
 import physics.math.Vector;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 
@@ -17,7 +19,7 @@ import static gizmo.Constant.centerPointRadius;
 
 
 @Data
-public abstract class Geometry implements Cloneable {
+public abstract class Geometry implements Cloneable,Serializable {
     public static int FRAMES_PER_SECOND = 100;
     private static int count = 0;
     protected Vector constantAcceleration;

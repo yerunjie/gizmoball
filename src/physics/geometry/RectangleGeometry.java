@@ -3,6 +3,7 @@ package physics.geometry;
 import com.google.common.collect.Lists;
 import gizmo.GamePanel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
@@ -11,13 +12,15 @@ import physics.math.MathUtils;
 import physics.math.Vector;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.List;
 
 import static gizmo.Constant.acceleration;
 import static physics.math.MathUtils.polygonCollisionProcess;
 
 @Data
-public class RectangleGeometry extends TwoPointGeometry implements PrintInterface, OperateInterface, MotionInterface, CollisionInterface {
+@NoArgsConstructor
+public class RectangleGeometry extends TwoPointGeometry implements PrintInterface, OperateInterface, MotionInterface, CollisionInterface ,Serializable {
     protected double width;
     protected double height;
 
@@ -84,6 +87,7 @@ public class RectangleGeometry extends TwoPointGeometry implements PrintInterfac
         for (PointGeometry p : pointGeometries) {
             MathUtils.rotatePoint(p, center, angle);
         }
+
     }
 
     @Override

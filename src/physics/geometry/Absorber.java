@@ -1,10 +1,13 @@
 package physics.geometry;
 
 import gizmo.PlayRoom;
+import lombok.NoArgsConstructor;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class Absorber extends RectangleGeometry {
+@NoArgsConstructor
+public class Absorber extends RectangleGeometry implements Serializable {
     public Absorber(PointGeometry point1, PointGeometry point2) {
         super(point1, point2);
     }

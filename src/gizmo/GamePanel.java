@@ -1,36 +1,35 @@
 package gizmo;
 
 import com.google.common.collect.Lists;
-import com.sun.tools.javac.util.Pair;
-import physics.math.Vector;
 import physics.geometry.*;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
 import physics.interfaces.PrintInterface;
 import physics.math.MathUtils;
+import physics.math.Vector;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.List;
-import java.util.Map;
 
 public class GamePanel extends JPanel {
     public static int FRAMES_PER_SECOND = 100;
-    private static int INDEX_BLOCK_NUMBER = 20;
     public static List<SegmentGeometry> segmentGeometries = Lists.newArrayList(
             new SegmentGeometry(new PointGeometry(10, 10), new PointGeometry(10, 650), false),
             new SegmentGeometry(new PointGeometry(10, 650), new PointGeometry(690, 650), true),
             new SegmentGeometry(new PointGeometry(690, 650), new PointGeometry(690, 10), false),
             new SegmentGeometry(new PointGeometry(690, 10), new PointGeometry(10, 10), true)
     );
-
+    public static Ball ball, tempBall;
+    public static int status;
+    private static int INDEX_BLOCK_NUMBER = 20;
     private PlayRoom playRoom;
     private Timer timer;
     private Geometry obstacle;
     private OperateInterface target = null;
-    public static Ball ball, tempBall;
     private List<Geometry> obstacles;
     private List<Flipper> flippers;
     private List<MotionInterface> motionInterfaces;
@@ -38,8 +37,6 @@ public class GamePanel extends JPanel {
     private List<PrintInterface> printInterfaces;
     private AnimationEventListener eventListener;
     private ReEditEventListener reEditEventListener;
-    private Map<Pair<Integer, Integer>, List<Geometry>> obstacleIndex;
-    public static int status;
 
     public GamePanel(PlayRoom playRoom) {
         //设置弹球窗口大小和背景
@@ -53,14 +50,28 @@ public class GamePanel extends JPanel {
         motionInterfaces = Lists.newArrayList();
         collisionInterfaces = Lists.newArrayList();
         printInterfaces = Lists.newArrayList();
-        //   obstacleIndex = Maps.newHashMap();
-//        for (int i = 0; i < INDEX_BLOCK_NUMBER; i++) {
-//            for (int j = 0; j < INDEX_BLOCK_NUMBER; j++) {
-//                Pair<Integer, Integer> pair = new Pair<>(i, j);
-//                obstacleIndex.put(pair, Lists.newArrayList());
-//            }
-//        }
     }
+
+    public void openFromFile(File file) {
+        obstacles = Lists.newArrayList();
+        try {
+            ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file));
+            obstacles = (List<Geometry>) objectInputStream.readObject();
+            repaint();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void save(File file) {
+        try {
+            ObjectOutputStream objectInputStream = new ObjectOutputStream(new FileOutputStream(file));
+            objectInputStream.writeObject(obstacles);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void addObstacle(Geometry newObstacle) {
         obstacle = newObstacle;
@@ -209,6 +220,38 @@ public class GamePanel extends JPanel {
         }
     }
 
+    private EditEventListener getEditEventListener(Geometry newObstacle) {
+        if (newObstacle instanceof TwoPointGeometry) {
+            return new EditTwoPointEventListener();
+        } else if (newObstacle instanceof Track) {
+            return new EditPolygonLineEventListener();
+        } else if (newObstacle instanceof QuadrilateralGeometry) {
+            return new EditPolygonEventListener(4);
+        } else {
+            return new EditPolygonEventListener(3);
+        }
+    }
+
+    private void addReEditListener() {
+        reEditEventListener = new ReEditEventListener();
+        addMouseListener(reEditEventListener);
+        addMouseMotionListener(reEditEventListener);
+        addMouseWheelListener(reEditEventListener);
+        addKeyListener(reEditEventListener);
+        requestFocus();
+        timer = new Timer(1000 / FRAMES_PER_SECOND, reEditEventListener);
+        timer.start();
+    }
+
+    private void removeReEditListener() {
+        timer.stop();
+        removeMouseListener(reEditEventListener);
+        removeMouseMotionListener(reEditEventListener);
+        removeMouseWheelListener(reEditEventListener);
+        removeKeyListener(reEditEventListener);
+        reEditEventListener = null;
+    }
+
     class AnimationEventListener extends MouseAdapter implements MouseMotionListener, KeyListener, ActionListener {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -274,38 +317,6 @@ public class GamePanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             update();
         }
-    }
-
-    private EditEventListener getEditEventListener(Geometry newObstacle) {
-        if (newObstacle instanceof TwoPointGeometry) {
-            return new EditTwoPointEventListener();
-        } else if (newObstacle instanceof Track) {
-            return new EditPolygonLineEventListener();
-        } else if (newObstacle instanceof QuadrilateralGeometry) {
-            return new EditPolygonEventListener(4);
-        } else {
-            return new EditPolygonEventListener(3);
-        }
-    }
-
-    private void addReEditListener() {
-        reEditEventListener = new ReEditEventListener();
-        addMouseListener(reEditEventListener);
-        addMouseMotionListener(reEditEventListener);
-        addMouseWheelListener(reEditEventListener);
-        addKeyListener(reEditEventListener);
-        requestFocus();
-        timer = new Timer(1000 / FRAMES_PER_SECOND, reEditEventListener);
-        timer.start();
-    }
-
-    private void removeReEditListener() {
-        timer.stop();
-        removeMouseListener(reEditEventListener);
-        removeMouseMotionListener(reEditEventListener);
-        removeMouseWheelListener(reEditEventListener);
-        removeKeyListener(reEditEventListener);
-        reEditEventListener = null;
     }
 
     abstract class EditEventListener extends MouseAdapter implements MouseMotionListener, ActionListener {
@@ -504,11 +515,19 @@ public class GamePanel extends JPanel {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
-                case 8://delete
-                    if (target != null) {
+            if (target != null) {
+                switch (e.getKeyCode()) {
+                    case 8://delete
                         obstacles.remove(target);
-                    }
+                        break;
+                    case 90://Z
+                        target.rotate(-1);
+                        break;
+                    case 88://X
+                        target.rotate(1);
+                        break;
+                }
+                repaint();
             }
         }
 
