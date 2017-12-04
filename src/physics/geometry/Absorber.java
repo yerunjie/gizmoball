@@ -15,15 +15,6 @@ public class Absorber extends RectangleGeometry {
     }
 
     @Override
-    public String toString() {
-        StringBuffer sb = new StringBuffer("Absorber[\n");
-        sb.append("super:").append(super.toString());
-        sb.append("]\n");
-
-        return sb.toString();
-    }
-
-    @Override
     public boolean onCollision(CircleGeometry ball) {
         if (super.onCollision(ball)) {
             PlayRoom.playRoom.endGame();

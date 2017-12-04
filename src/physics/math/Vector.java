@@ -1,4 +1,4 @@
-package physics;
+package physics.math;
 
 import lombok.Data;
 import physics.geometry.LineGeometry;

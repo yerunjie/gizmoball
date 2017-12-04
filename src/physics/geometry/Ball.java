@@ -2,7 +2,7 @@ package physics.geometry;
 
 import gizmo.GamePanel;
 import lombok.Data;
-import physics.Vector;
+import physics.math.Vector;
 
 import java.awt.*;
 import java.util.LinkedList;

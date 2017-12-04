@@ -2,8 +2,8 @@ package physics.geometry;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import physics.Vector;
 import physics.interfaces.FlipperOperateInterface;
+import physics.math.Vector;
 
 import static gizmo.GamePanel.segmentGeometries;
 

@@ -1,18 +1,13 @@
 package physics.math;
 
 import com.google.common.collect.Lists;
-import physics.Vector;
 import physics.geometry.CircleGeometry;
 import physics.geometry.LineGeometry;
 import physics.geometry.PointGeometry;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static gizmo.Constant.APPROXIMATE_DISTANCE;
-import static gizmo.Constant.acceleration;
 
 public class MathUtils {
 

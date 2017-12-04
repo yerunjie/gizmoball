@@ -2,17 +2,16 @@ package physics.geometry;
 
 import gizmo.GamePanel;
 import lombok.Data;
-import physics.Vector;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
 import physics.interfaces.PrintInterface;
 import physics.math.MathUtils;
+import physics.math.Vector;
 
 import java.awt.*;
 
 import static gizmo.Constant.acceleration;
-import static physics.Vector.ZERO;
 import static physics.math.MathUtils.distanceBetweenTwoPoints;
 
 @Data
@@ -69,17 +68,6 @@ public class CircleGeometry extends RectangleGeometry implements PrintInterface,
         CircleGeometry newObject = (CircleGeometry) super.clone();
         newObject.setCenter((PointGeometry) newObject.getCenter().clone());
         return newObject;
-    }
-
-    @Override
-    public String toString() {
-        StringBuffer sb = new StringBuffer("CircleGeometry[\n");
-        sb.append("super:").append(super.toString());
-        sb.append("    r:").append(r).append(";\n");
-        sb.append("    center:").append(center.toString()).append(";\n");
-        sb.append("]\n");
-
-        return sb.toString();
     }
 
     @Override

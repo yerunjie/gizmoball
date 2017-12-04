@@ -1,7 +1,6 @@
 package physics.geometry;
 
 import lombok.Data;
-import physics.math.MathUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -17,15 +16,6 @@ public class PointGeometry extends Geometry {
         this.y = y;
     }
 
-    @Override
-    public void reset(List<PointGeometry> pointGeometries) {
-        if (pointGeometries.size() != 1) {
-            throw new IllegalArgumentException();
-        }
-        x = pointGeometries.get(0).x;
-        y = pointGeometries.get(0).y;
-    }
-
     public PointGeometry(Point point) {
         this.x = point.x;
         this.y = point.y;
@@ -34,6 +24,15 @@ public class PointGeometry extends Geometry {
     public PointGeometry(PointGeometry point) {
         this.x = point.x;
         this.y = point.y;
+    }
+
+    @Override
+    public void reset(List<PointGeometry> pointGeometries) {
+        if (pointGeometries.size() != 1) {
+            throw new IllegalArgumentException();
+        }
+        x = pointGeometries.get(0).x;
+        y = pointGeometries.get(0).y;
     }
 
     public Point toPoint() {
@@ -52,14 +51,6 @@ public class PointGeometry extends Geometry {
     @Override
     public boolean onCollision(CircleGeometry ball) {
         return false;
-    }
-
-    @Override
-    public String toString() {
-        return "PointGeometry{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
     }
 
     @Override

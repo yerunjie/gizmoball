@@ -1,9 +1,8 @@
 package gizmo;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.sun.tools.javac.util.Pair;
-import physics.Vector;
+import physics.math.Vector;
 import physics.geometry.*;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.MotionInterface;

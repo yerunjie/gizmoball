@@ -2,12 +2,12 @@ package physics.geometry;
 
 import com.google.common.collect.Lists;
 import gizmo.GamePanel;
-import physics.Vector;
 import physics.interfaces.CollisionInterface;
 import physics.interfaces.MotionInterface;
 import physics.interfaces.OperateInterface;
 import physics.interfaces.PrintInterface;
 import physics.math.MathUtils;
+import physics.math.Vector;
 
 import java.awt.*;
 import java.util.List;

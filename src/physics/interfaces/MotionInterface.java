@@ -1,6 +1,6 @@
 package physics.interfaces;
 
-import physics.Vector;
+import physics.math.Vector;
 import physics.geometry.Geometry;
 import physics.geometry.PointGeometry;
 
