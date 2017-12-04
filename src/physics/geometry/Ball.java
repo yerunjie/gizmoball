@@ -4,6 +4,7 @@ import gizmo.GamePanel;
 import lombok.Data;
 import physics.Vector;
 
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -27,6 +28,11 @@ public class Ball extends CircleGeometry {
         pointGeometry = trackQueue.poll();
         velocity = new Vector(pointGeometry, trackQueue.peek()).setNorm(velocity.getNorm());
         canCollision = false;
+    }
+
+    @Override
+    public void print(Color color, Graphics g) {
+        super.print(Color.pink, g);
     }
 
     @Override

@@ -11,7 +11,7 @@ public class PlayRoom extends JFrame {
     public static PlayRoom playRoom;
     private JPanel operatePanel;
     private GamePanel gamePanel;
-    private JButton start, stop, addAbsorb, end, addFlipper, addTriangle, addRectangle, addCircle, addBall,addTrack;
+    private JButton start, stop, addAbsorb, end, addFlipper, addTriangle, addRectangle, addCircle, addBall, addTrack, addQuadrilateral;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -29,6 +29,7 @@ public class PlayRoom extends JFrame {
         addCircle.setEnabled(mode);
         addRectangle.setEnabled(mode);
         addTrack.setEnabled(mode);
+        addQuadrilateral.setEnabled(mode);
     }
 
     public void startGame() {
@@ -178,6 +179,18 @@ public class PlayRoom extends JFrame {
             }
         });
 
+        addQuadrilateral = new JButton("添加四边形");
+        addQuadrilateral.setBounds(850, 550, 100, 30);
+        addQuadrilateral.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == addQuadrilateral) {
+                    setEditMode(false);
+                    gamePanel.addObstacle(new QuadrilateralGeometry());
+                }
+            }
+        });
+
         //将按钮添加到操作侧栏
         operatePanel.add(start);
         operatePanel.add(stop);
@@ -189,6 +202,7 @@ public class PlayRoom extends JFrame {
         operatePanel.add(addCircle);
         operatePanel.add(addBall);
         operatePanel.add(addTrack);
+        operatePanel.add(addQuadrilateral);
 
         //显示窗口
         this.setVisible(true);

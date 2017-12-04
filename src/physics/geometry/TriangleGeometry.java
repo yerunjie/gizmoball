@@ -121,7 +121,7 @@ public class TriangleGeometry extends Geometry implements PrintInterface, Operat
     @Override
     public void print(Color color, Graphics g) {
         g.setColor(color);
-        g.drawPolygon(xpoints, ypoints, 3);
+        g.fillPolygon(xpoints, ypoints, 3);
     }
 
     @Override
@@ -209,21 +209,21 @@ public class TriangleGeometry extends Geometry implements PrintInterface, Operat
         PointToLine p1p2 = MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(
                 point1, point2));
         if (p1p2.getDistance() <= ball.r) {
-            Vector pro = LineGeometry.lineCollisionProcess(p1p2.getCollisionPoint(), ball, point1, point2);
+            Vector pro = MathUtils.lineCollisionProcess(p1p2.getCollisionPoint(), ball, point1, point2);
             setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;
         }
         PointToLine p2p3 = MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(
                 point2, point3));
         if (p2p3.getDistance() <= ball.r) {
-            Vector pro = LineGeometry.lineCollisionProcess(p2p3.getCollisionPoint(), ball, point2, point3);
+            Vector pro = MathUtils.lineCollisionProcess(p2p3.getCollisionPoint(), ball, point2, point3);
             setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;
         }
         PointToLine p1p3 = MathUtils.calculatePointToLineDistance(ball.center, new LineGeometry(
                 point1, point3));
         if (p1p3.getDistance() <= ball.r) {
-            Vector pro = LineGeometry.lineCollisionProcess(p1p3.getCollisionPoint(), ball, point3, point1);
+            Vector pro = MathUtils.lineCollisionProcess(p1p3.getCollisionPoint(), ball, point3, point1);
             setInstantaneousAcceleration(new Vector(pro, acceleration));
             return true;
         } else return false;

@@ -2,14 +2,17 @@ package physics.math;
 
 import com.google.common.collect.Lists;
 import physics.Vector;
+import physics.geometry.CircleGeometry;
 import physics.geometry.LineGeometry;
 import physics.geometry.PointGeometry;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static gizmo.Constant.APPROXIMATE_DISTANCE;
+import static gizmo.Constant.acceleration;
 
 public class MathUtils {
 
@@ -88,5 +91,43 @@ public class MathUtils {
         return oddNodes;
     }
 
+    public static Vector lineCollisionProcess(int collisionPoint, CircleGeometry ball, PointGeometry p1, PointGeometry p2) {
+        return lineCollisionProcess(collisionPoint, ball, p1, p2, 2);
+    }
 
+    public static Vector lineCollisionProcess(int collisionPoint, CircleGeometry ball, PointGeometry p1, PointGeometry p2, int scalar) {
+        Vector pro;
+        if (collisionPoint == 1) {
+            pro = ball.getVelocity().takeFrom(ball.getVelocity().projection(new LineGeometry(p1, p2)));
+            ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(scalar)
+            );
+        } else if (collisionPoint == 2) {
+            pro = ball.getVelocity().projection(new LineGeometry(ball.getCenter(), p1));
+            ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(scalar));
+        } else {
+            pro = ball.getVelocity().projection(new LineGeometry(ball.getCenter(), p2));
+            ball.setInstantaneousAcceleration(pro.negate().multiplyScalar(scalar));
+        }
+        return pro;
+    }
+
+    public static Vector polygonCollisionProcess(List<PointGeometry> pointGeometries, CircleGeometry ball, int scalar) {
+        Vector pro = null;
+        for (int i = 0; i < pointGeometries.size() - 1; i++) {
+            LineGeometry lineGeometry = new LineGeometry(pointGeometries.get(i), pointGeometries.get(i + 1));
+            if (MathUtils.calculatePointToLineDistance(ball.getCenter(), lineGeometry).getDistance() <= ball.getR()) {
+                pro = MathUtils.lineCollisionProcess(
+                        MathUtils.calculatePointToLineDistance(ball.getCenter(), lineGeometry).getCollisionPoint(),
+                        ball, pointGeometries.get(i), pointGeometries.get(i + 1), scalar);
+                return pro;
+            }
+        }
+        LineGeometry lineGeometry = new LineGeometry(pointGeometries.get(0), pointGeometries.get(pointGeometries.size() - 1));
+        if (MathUtils.calculatePointToLineDistance(ball.getCenter(), lineGeometry).getDistance() <= ball.getR()) {
+            pro = MathUtils.lineCollisionProcess(
+                    MathUtils.calculatePointToLineDistance(ball.getCenter(), lineGeometry).getCollisionPoint(),
+                    ball, pointGeometries.get(0), pointGeometries.get(pointGeometries.size() - 1), scalar);
+        }
+        return pro;
+    }
 }

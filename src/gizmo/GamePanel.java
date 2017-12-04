@@ -31,7 +31,7 @@ public class GamePanel extends JPanel {
     private Timer timer;
     private Geometry obstacle;
     private OperateInterface target = null;
-    private static Ball ball, tempBall;
+    public static Ball ball, tempBall;
     private List<Geometry> obstacles;
     private List<Flipper> flippers;
     private List<MotionInterface> motionInterfaces;
@@ -40,7 +40,7 @@ public class GamePanel extends JPanel {
     private AnimationEventListener eventListener;
     private ReEditEventListener reEditEventListener;
     private Map<Pair<Integer, Integer>, List<Geometry>> obstacleIndex;
-    private int status;
+    public static int status;
 
     public GamePanel(PlayRoom playRoom) {
         //设置弹球窗口大小和背景
@@ -103,7 +103,7 @@ public class GamePanel extends JPanel {
         }
         try {
             tempBall = ball.clone();
-            tempBall.setConstantAcceleration(new Vector(0, 5000));
+            tempBall.setConstantAcceleration(new Vector(0, 200));
             tempBall.setVelocity(new Vector(0, 0));
             motionInterfaces.add(tempBall);
             printInterfaces.add(tempBall);
@@ -115,8 +115,8 @@ public class GamePanel extends JPanel {
                 if (clone instanceof MotionInterface) {
                     motionInterfaces.add((MotionInterface) clone);
                 }
-                if(clone instanceof PrintInterface){
-                    printInterfaces.add((PrintInterface)clone);
+                if (clone instanceof PrintInterface) {
+                    printInterfaces.add((PrintInterface) clone);
                 }
                 if (clone instanceof CollisionInterface) {
                     collisionInterfaces.add((CollisionInterface) clone);
@@ -186,7 +186,7 @@ public class GamePanel extends JPanel {
                             ((PrintInterface) geometry).print(Color.GREEN, g);
                             target.printEditBound(g);
                         } else {
-                            ((PrintInterface) geometry).print(Color.BLACK, g);
+                            ((PrintInterface) geometry).print(Color.BLUE, g);
                         }
                     }
                 }
@@ -204,7 +204,7 @@ public class GamePanel extends JPanel {
                 break;
             case 2:
                 for (PrintInterface printInterface : printInterfaces) {
-                    printInterface.print(Color.BLACK, g);
+                    printInterface.print(Color.cyan, g);
                 }
                 break;
         }
@@ -282,6 +282,8 @@ public class GamePanel extends JPanel {
             return new EditTwoPointEventListener();
         } else if (newObstacle instanceof Track) {
             return new EditPolygonLineEventListener();
+        } else if (newObstacle instanceof QuadrilateralGeometry) {
+            return new EditPolygonEventListener(4);
         } else {
             return new EditPolygonEventListener(3);
         }
@@ -292,6 +294,8 @@ public class GamePanel extends JPanel {
         addMouseListener(reEditEventListener);
         addMouseMotionListener(reEditEventListener);
         addMouseWheelListener(reEditEventListener);
+        addKeyListener(reEditEventListener);
+        requestFocus();
         timer = new Timer(1000 / FRAMES_PER_SECOND, reEditEventListener);
         timer.start();
     }
@@ -301,6 +305,7 @@ public class GamePanel extends JPanel {
         removeMouseListener(reEditEventListener);
         removeMouseMotionListener(reEditEventListener);
         removeMouseWheelListener(reEditEventListener);
+        removeKeyListener(reEditEventListener);
         reEditEventListener = null;
     }
 
@@ -487,13 +492,30 @@ public class GamePanel extends JPanel {
     }
 
 
-    class ReEditEventListener extends MouseAdapter implements MouseMotionListener, ActionListener {
+    class ReEditEventListener extends MouseAdapter implements MouseMotionListener, ActionListener, KeyListener {
         protected PointGeometry startPoint = null;
 
         ReEditEventListener() {
         }
 
-        protected void end() {
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()) {
+                case 8://delete
+                    if (target != null) {
+                        obstacles.remove(target);
+                    }
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+
         }
 
         @Override
