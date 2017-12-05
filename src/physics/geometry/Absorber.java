@@ -27,6 +27,7 @@ public class Absorber extends RectangleGeometry implements Serializable {
 
     @Override
     public void print(Color color, Graphics g) {
-        super.print(Color.YELLOW, g);
+        Color color1 = new Color(255,165,79);
+        super.print(color1, g);
     }
 }

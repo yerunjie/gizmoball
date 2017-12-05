@@ -38,6 +38,10 @@ public class GamePanel extends JPanel {
     private AnimationEventListener eventListener;
     private ReEditEventListener reEditEventListener;
 
+    private Color selectBallColor = new Color(255,193,193);
+    private Color runColor = new Color(173,216,230);
+    private Color editColor = new Color(255,236,139);
+    private Color selectColor = new Color(255,215,0);
     public GamePanel(PlayRoom playRoom) {
         //设置弹球窗口大小和背景
         this.playRoom = playRoom;
@@ -193,19 +197,19 @@ public class GamePanel extends JPanel {
                 for (Geometry geometry : obstacles) {
                     if (geometry instanceof PrintInterface) {
                         if (target == geometry) {
-                            ((PrintInterface) geometry).print(Color.GREEN, g);
+                            ((PrintInterface) geometry).print(selectColor, g);
                             target.printEditBound(g);
                         } else {
-                            ((PrintInterface) geometry).print(Color.BLUE, g);
+                            ((PrintInterface) geometry).print(editColor, g);
                         }
                     }
                 }
                 if (obstacle != null && obstacle instanceof PrintInterface) {
-                    ((PrintInterface) obstacle).drawing(Color.GREEN, g);
+                    ((PrintInterface) obstacle).drawing(selectColor, g);
                 }
                 if (ball != null) {
                     if (ball == target) {
-                        ball.drawing(Color.GREEN, g);
+                        ball.drawing(selectBallColor, g);
                         ball.printEditBound(g);
                     } else {
                         ball.drawing(Color.pink, g);
@@ -214,7 +218,7 @@ public class GamePanel extends JPanel {
                 break;
             case 2:
                 for (PrintInterface printInterface : printInterfaces) {
-                    printInterface.print(Color.cyan, g);
+                    printInterface.print(runColor, g);
                 }
                 break;
         }

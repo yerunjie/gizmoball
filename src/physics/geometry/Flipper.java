@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import physics.interfaces.FlipperOperateInterface;
 import physics.math.Vector;
 
+import java.awt.*;
 import java.io.Serializable;
 
 import static gizmo.GamePanel.segmentGeometries;
@@ -48,21 +49,18 @@ public class Flipper extends RectangleGeometry implements FlipperOperateInterfac
     }
 
     @Override
-    public String toString() {
-        StringBuffer sb = new StringBuffer("Flipper[\n");
-        sb.append("super:").append(super.toString());
-        sb.append("]\n");
-
-        return sb.toString();
-    }
-
-    @Override
     public boolean onCollision(CircleGeometry ball) {
         if (onCollision(ball, isMoving ? 2 : 2)) {
             setVelocity(new Vector(Vector.ZERO));
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void print(Color color, Graphics g) {
+        Color color1 = new Color(176,196,222);
+        super.print(color1, g);
     }
 
 }
